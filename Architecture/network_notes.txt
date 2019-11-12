@@ -1,0 +1,23 @@
+exemple communication:
+
+tcp: instance creation
+client -> connect
+server -> accept
+client -> request instance
+server -> instance ID
+server -> player ID
+server -> instance sync data
+client -> sync done
+
+
+udp: all
+server -> ID + event...
+client -> ID + event...
+
+tcp: instance join
+client -> connect
+server -> accept
+client -> request join ID
+server -> player ID
+server -> instance sync data
+client -> sync done
