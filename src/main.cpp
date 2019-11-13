@@ -5,7 +5,12 @@
 ** main
 */
 
+#include <Entity.hpp>
+
 int	main(int, char *[])
 {
-	return 0;
+	Entity	ent;
+	ent.addComponent<int>(50);
+	std::lock_guard	lock (ent);
+	return *ent.getComponent<int>();
 }
