@@ -18,7 +18,7 @@
 template<typename T>
 class TIndexedType {
 	public:
-		virtual ~TIndexedType();
+		virtual ~TIndexedType() = default;
 
 		static TypeIndex	getID()
 		{

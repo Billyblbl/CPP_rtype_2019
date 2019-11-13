@@ -80,6 +80,16 @@ class TLockedRef {
 			return &_ref;
 		}
 
+		operator T&()
+		{
+			return _ref;
+		}
+
+		operator const T&() const
+		{
+			return _ref;
+		}
+
 	protected:
 	private:
 
