@@ -59,7 +59,7 @@ class TLockedRef {
 		///
 		T	*operator->()
 		{
-			return &_ref:
+			return &_ref;
 		}
 
 		///
@@ -77,7 +77,7 @@ class TLockedRef {
 		///
 		const T	*operator->() const
 		{
-			return &_ref:
+			return &_ref;
 		}
 
 	protected:
