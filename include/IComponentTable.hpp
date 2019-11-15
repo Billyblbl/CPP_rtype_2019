@@ -11,10 +11,20 @@
 #include <cinttypes>
 #include <typeindex>
 
+///
+///@brief Component table interface
+///
+/// Used mostly for runtime binding of containers
+///
 class IComponentTable {
 	public:
+
 		virtual ~IComponentTable() = default;
 
+		///
+		///@brief Get the Type ID of the components in the table
+		///
+		///
 		virtual std::type_index	getTypeID() const = 0;
 
 	protected:

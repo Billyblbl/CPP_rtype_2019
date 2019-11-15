@@ -12,19 +12,34 @@
 #include "ISystem.hpp"
 #include "TComponentTable.hpp"
 
+///
+///@brief ECS System Template
+///
+///@tparam Components Component types accessed by the system
+///
 template<typename... Components>
 class TSystem : public ISystem {
 	public:
-		TSystem();
-		~TSystem();
 
+		///
+		///@brief Reload the system
+		///
+		///
 		void	reload()
 		{
 			onReload();
 		}
 
+		///
+		///@brief Free for override event triggered on call to reload
+		///
+		///
 		virtual void	onReload() {}
 
+		///
+		///@brief interna tuple types of references to managed components' tables
+		///
+		///
 		using TablePacket = std::tuple<TComponentTable<Components> &...>;
 
 
