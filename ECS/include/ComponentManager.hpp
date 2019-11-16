@@ -15,7 +15,7 @@
 #include "TComponentTable.hpp"
 
 ///
-///@brief Contains al tables of components of a single instance
+///@brief Contains all tables of components of a single instance
 ///
 ///
 class ComponentManager {
@@ -29,6 +29,7 @@ class ComponentManager {
 		template<typename ComponentType>
 		auto		&getTable()
 		{
+			static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 			auto	*table = _tables.at(typeid(ComponentType)).get();
 			return *static_cast<TComponentTable<ComponentType> *>(table);
 		}
@@ -41,6 +42,7 @@ class ComponentManager {
 		template<typename ComponentType>
 		const auto	&getTable() const
 		{
+			static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 			auto	*table = _tables.at(typeid(ComponentType)).get();
 			return *static_cast<TComponentTable<ComponentType> *>(table);
 		}
@@ -53,6 +55,7 @@ class ComponentManager {
 		template<typename ComponentType>
 		void		addTable()
 		{
+			static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 			_tables.emplace(
 				std::type_index(typeid(ComponentType)),
 				std::unique_ptr<IComponentTable>(std::make_unique<TComponentTable<ComponentType>>())
@@ -67,6 +70,7 @@ class ComponentManager {
 		template<typename ComponentType>
 		void		removeTable()
 		{
+			static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 			_tables.erase(typeid(ComponentType));
 		}
 

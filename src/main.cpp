@@ -8,7 +8,7 @@
 #include <iostream>
 #include "ComponentManager.hpp"
 #include "TTask.hpp"
-
+#include "SystemManager.hpp"
 struct zeofizoifjzo {
 	zeofizoifjzo(int a, int b, double c):
 		i(a),
@@ -24,6 +24,7 @@ struct zeofizoifjzo {
 int	main(int, char *[])
 {
 	ComponentManager	m;
+	SystemManager		sm;
 
 	using type = zeofizoifjzo;
 	m.addTable<type>();
@@ -43,6 +44,10 @@ int	main(int, char *[])
 			std::cout << beb->i << ' '  << beb->e << ' '  << beb->zeiouher << std::endl;
 		}
 	});
+
+	TTask		task2(task);
+
+	TTask		task3(std::move(task2));
 
 	task();
 

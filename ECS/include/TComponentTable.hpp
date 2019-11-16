@@ -103,4 +103,31 @@ class TComponentTable : public IComponentTable {
 		std::type_index							_type;
 };
 
+///
+///@brief Table of forcibly non-const components
+///
+/// Utility type.
+/// Makes a component table type out of a component table while removing
+/// constant qualifier from the comopnent type
+///
+///@warning meant to be used with MaybeConstTable template, other uses are dangerous
+///
+///@tparam Component 
+///
+template<typename Component>
+using TableNonConst = TComponentTable<std::remove_const_t<Component>>;
+
+///
+///@brief component tables const qualifier manipulator
+///
+/// Makes a component table type where any const qualifier is moved from the
+/// components type to the table type
+///
+template<typename Component>
+using MaybeConstTable = std::conditional_t<
+	/* if */std::is_const_v<Component>,
+	/* then */const TableNonConst<Component>,
+	/* else */TableNonConst<Component>
+>;
+
 #endif /* !TCOMPONENTTABLE_HPP_ */
