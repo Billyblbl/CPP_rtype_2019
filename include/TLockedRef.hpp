@@ -17,7 +17,7 @@
 ///
 ///@tparam T 
 ///
-template<typename T, class MutexLike>
+template<typename T, class MutexLike = std::mutex>
 class TLockedRef {
 	public:
 
