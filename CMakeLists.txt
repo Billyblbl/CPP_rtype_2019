@@ -10,7 +10,7 @@ conan_basic_setup()
 include_directories(${CMAKE_INCLUDE_PATH} ECS/include include)
 
 #set source files
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "ECS/src/*.cpp")
 
 add_executable(rtype ${SOURCES})
 target_link_libraries(rtype ${CONAN_LIBS})
