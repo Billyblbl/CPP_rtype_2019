@@ -22,32 +22,6 @@ template<typename... Components>
 class TTask {
 	public:
 
-		///
-		///@brief Table of forcibly non-const components
-		///
-		/// Utility type.
-		/// Makes a component table type out of a component table while removing
-		/// constant qualifier from the comopnent type
-		///
-		///@warning meant to be used with MaybeConstTable template
-		///
-		///@tparam Component 
-		///
-		template<typename Component>
-		using TableNonConst = TComponentTable<std::remove_const_t<Component>>;
-
-		///
-		///@brief component tables const qualifier manipulator
-		///
-		/// Makes a component table type where any const qualifier is moved from the
-		/// components type to the table type
-		///
-		template<typename Component>
-		using MaybeConstTable = std::conditional_t<
-			/* if */std::is_const_v<Component>,
-			/* then */const TableNonConst<Component>,
-			/* else */TableNonConst<Component>
-		>;
 
 		///
 		///@brief tuple type of Component table types accessible by the task
@@ -71,6 +45,18 @@ class TTask {
 			_componentsTables(std::forward<MaybeConstTable<Components> &>(tables)...),
 			_executor(executor)
 		{}
+
+		///
+		///@brief Copy constructor
+		///
+		///
+		TTask(const TTask &) = default;
+
+		///
+		///@brief Move constructor
+		///
+		///
+		TTask(TTask &&) = default;
 
 		///
 		///@brief Call operator

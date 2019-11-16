@@ -64,6 +64,10 @@ int	main(int, char *[])
 		}
 	});
 
+	TTask		task2(task);
+
+	TTask		task3(std::move(task2));
+
 	task();
 
 	s.removeTask(node);

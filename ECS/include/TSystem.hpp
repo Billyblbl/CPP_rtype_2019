@@ -11,6 +11,7 @@
 #include <tuple>
 #include "ISystem.hpp"
 #include "TComponentTable.hpp"
+#include "TTask.hpp"
 
 ///
 ///@brief ECS System Template
@@ -21,6 +22,10 @@ template<typename... Components>
 class TSystem : public ISystem {
 	public:
 
+		TSystem(TComponentTable<Components>&... tables):
+			_componentsTables(std::forward<TComponentTable<Components>>(tables)...)
+		{}
+
 		///
 		///@brief Reload the system
 		///
@@ -30,11 +35,7 @@ class TSystem : public ISystem {
 			onReload();
 		}
 
-		///
-		///@brief Free for override event triggered on call to reload
-		///
-		///
-		virtual void	onReload() {}
+
 
 		///
 		///@brief interna tuple types of references to managed components' tables
@@ -44,9 +45,34 @@ class TSystem : public ISystem {
 
 
 	protected:
+
+		///
+		///@brief Declares a task of corresponding components with the given executor
+		///
+		/// Provides task with accessible components tables
+		///
+		///@tparam TaskComponents Components used by the task
+		///@param task executor used to define the actions taken by the task
+		///@return auto Built task
+		///
+		template<typename... TaskComponents, class Task = TTask<TaskComponents...>>
+		auto	declareTask(typename Task::ExecutorType &task)
+		{
+			return TTask<TaskComponents...>(
+				std::get<TableNonConst<TaskComponents>>(_componentsTables)...,
+				task
+			);
+		}
+
+		///
+		///@brief Free for override event triggered on call to reload
+		///
+		///
+		virtual void	onReload() {}
+
 	private:
 
-		std::tuple<TComponentTable<ComponentT>...>	_componentsTables;
+		TablePacket	_componentsTables;
 };
 
 #endif /* !TSYSTEM_HPP_ */
