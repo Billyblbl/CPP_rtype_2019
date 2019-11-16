@@ -8,13 +8,7 @@
 #ifndef TCOMPONENT_HPP_
 #define TCOMPONENT_HPP_
 
-#include <cinttypes>
-
-///
-///@brief ID type used to reference an entity
-///
-///
-using EntityID = uint64_t;
+#include "EntityPool.hpp"
 
 ///
 ///@brief ECS Component template
