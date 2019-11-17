@@ -65,7 +65,7 @@ class Scheduler : public ATaskPresenter {
 	///@param task to add a ndoe with
 	///
 	template<typename... Components>
-	auto	&postTask(const TTask<Components...> &task)
+	auto	&postTask(const ECS::TTask<Components...> &task)
 	{
 		auto &newNode = _taskgraph.emplace_back(task);
 		(..., [](Components *ignore = nullptr){

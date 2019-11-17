@@ -7,11 +7,11 @@
 
 #include "EntityPool.hpp"
 
-EntityPool::EntityPool():
+ECS::EntityPool::EntityPool():
 	_counter(0)
 {}
 
-EntityID	EntityPool::takeID()
+ECS::EntityID	ECS::EntityPool::takeID()
 {
 	if (_unused.empty())
 		return _counter++;
@@ -22,17 +22,17 @@ EntityID	EntityPool::takeID()
 	}
 }
 
-void		EntityPool::returnID(EntityID id)
+void		ECS::EntityPool::returnID(EntityID id)
 {
 	_unused.push(id);
 }
 
-size_t		EntityPool::getPopSize() const
+size_t		ECS::EntityPool::getPopSize() const
 {
 	return _counter - _unused.size();
 }
 
-size_t		EntityPool::getUnusedSize() const
+size_t		ECS::EntityPool::getUnusedSize() const
 {
 	return _unused.size();
 }

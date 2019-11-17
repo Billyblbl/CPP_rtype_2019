@@ -25,13 +25,12 @@ struct zeofizoifjzo {
 
 int	main(int, char *[])
 {
-
 	Instance	instance;
 
 	using type = zeofizoifjzo;
 	instance.components.addTable<type>();
 	instance.components.addTable<int>();
-	TTask<const int>	t(instance.components.getTable<int>(), [](auto &){
+	ECS::TTask<const int>	t(instance.components.getTable<int>(), [](auto &){
 		std::cout << "lolilol" << std::endl;
 	});
 
@@ -58,16 +57,15 @@ int	main(int, char *[])
 	std::cout << pppp->i << ' ' << pppp->e << ' '  << pppp->zeiouher << std::endl;
 
 
-	//task behavior test
-	TTask<type>	task(instance.components.getTable<type>(), [](TComponentTable<type> &zbebs){
+	ECS::TTask<type>	task(instance.components.getTable<type>(), [](ECS::TComponentTable<zeofizoifjzo> &zbebs){
 		for (auto &beb : zbebs.get()) {
 			std::cout << beb->i << ' '  << beb->e << ' '  << beb->zeiouher << std::endl;
 		}
 	});
 
-	TTask		task2(task);
+	ECS::TTask		task2(task);
 
-	TTask		task3(std::move(task2));
+	ECS::TTask		task3(std::move(task2));
 
 	task();
 

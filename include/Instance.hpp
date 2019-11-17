@@ -19,9 +19,9 @@
 class Instance {
 	public:
 
-		Scheduler			scheduler;
-		ComponentManager	components;
-		SystemManager		systems;
+		Scheduler				scheduler;
+		ECS::ComponentManager	components;
+		ECS::SystemManager		systems;
 
 	protected:
 	private:

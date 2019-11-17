@@ -9,7 +9,7 @@
 
 EventMediator::EventMediator(Scheduler &scheduler)
 {
-	scheduler.postTask(TTask<>([this](){
+	scheduler.postTask(ECS::TTask<>([this](){
 		processPendingEvents();
 	}));
 }
