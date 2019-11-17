@@ -16,17 +16,38 @@
 #include "TListener.hpp"
 #include "Scheduler.hpp"
 
+///
+///@brief Central event mediator object
+///
+///
 class EventMediator {
 	public:
 
+		///
+		///@brief Construct a new Event Mediator object
+		///
+		///@param scheduler schhuler to bind to this mediator's event processing task
+		///
 		EventMediator(Scheduler &scheduler);
 
+		///
+		///@brief Add a listener on an event
+		///
+		///@tparam EventType to add the listener on
+		///@param listener listener to add on the event type
+		///
 		template<typename EventType>
 		void	on(TListener<EventType> &listener)
 		{
 			_listeners[typeid(EventType)].emplace_back(&listener);
 		}
 
+		///
+		///@brief Removes a listener form an event
+		///
+		///@tparam EventType to remove a listener from
+		///@param listener listener to remove
+		///
 		template<typename EventType>
 		void	removeListener(TListener<EventType> &listener)
 		{
@@ -36,6 +57,10 @@ class EventMediator {
 				_listeners.erase(typeid(EventType));
 		}
 
+		///
+		///@brief Trigger an event
+		///
+		///
 		template<typename EventType>
 		void	trigger(const EventType &event)
 		{
@@ -46,6 +71,10 @@ class EventMediator {
 	protected:
 	private:
 
+		///
+		///@brief process task
+		///
+		///
 		void	processPendingEvents();
 
 		using EventHolder = std::pair<std::type_index, std::any>;

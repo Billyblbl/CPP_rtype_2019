@@ -12,6 +12,10 @@
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 
+///
+///@brief Game instance object
+///
+///
 class Instance {
 	public:
 
