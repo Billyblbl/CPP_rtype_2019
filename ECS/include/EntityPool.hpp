@@ -12,27 +12,30 @@
 #include <queue>
 #include <cstddef>
 
-///
-///@brief ID type used to reference an entity
-///
-///
-using EntityID = uint64_t;
+namespace ECS {
 
-class EntityPool {
-	public:
-		EntityPool();
+	///
+	///@brief ID type used to reference an entity
+	///
+	///
+	using EntityID = uint64_t;
 
-		EntityID	takeID();
-		void		returnID(EntityID id);
+	class EntityPool {
+		public:
+			EntityPool();
 
-		size_t		getPopSize() const;
-		size_t		getUnusedSize() const;
+			EntityID	takeID();
+			void		returnID(EntityID id);
 
-	protected:
-	private:
+			size_t		getPopSize() const;
+			size_t		getUnusedSize() const;
 
-		EntityID				_counter;
-		std::queue<EntityID>	_unused;
-};
+		protected:
+		private:
+
+			EntityID				_counter;
+			std::queue<EntityID>	_unused;
+	};
+}
 
 #endif /* !ENTITYPOOL_HPP_ */

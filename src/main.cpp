@@ -23,8 +23,8 @@ struct zeofizoifjzo {
 
 int	main(int, char *[])
 {
-	ComponentManager	m;
-	SystemManager		sm;
+	ECS::ComponentManager	m;
+	ECS::SystemManager		sm;
 
 	using type = zeofizoifjzo;
 	m.addTable<type>();
@@ -39,15 +39,15 @@ int	main(int, char *[])
 	std::cout << pppp->i << ' ' << pppp->e << ' '  << pppp->zeiouher << std::endl;
 
 
-	TTask<type>	task(m.getTable<type>(), [](TComponentTable<zeofizoifjzo> &zbebs){
+	ECS::TTask<type>	task(m.getTable<type>(), [](ECS::TComponentTable<zeofizoifjzo> &zbebs){
 		for (auto &beb : zbebs.get()) {
 			std::cout << beb->i << ' '  << beb->e << ' '  << beb->zeiouher << std::endl;
 		}
 	});
 
-	TTask		task2(task);
+	ECS::TTask		task2(task);
 
-	TTask		task3(std::move(task2));
+	ECS::TTask		task3(std::move(task2));
 
 	task();
 

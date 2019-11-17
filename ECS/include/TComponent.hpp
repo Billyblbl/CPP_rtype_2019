@@ -10,97 +10,100 @@
 
 #include "EntityPool.hpp"
 
-///
-///@brief ECS Component template
-///
-///@tparam ObjectT usable type of the component
-///
-template<typename ObjectT>
-class TComponent {
-	public:
+namespace ECS {
 
-		///
-		///@brief Usable internal type
-		///
-		///
-		using Object = ObjectT;
+	///
+	///@brief ECS Component template
+	///
+	///@tparam ObjectT usable type of the component
+	///
+	template<typename ObjectT>
+	class TComponent {
+		public:
 
-		///
-		///@brief Construct a new TComponent object
-		///
-		///@tparam Args Construction args types
-		///@param args Construction args
-		///
-		template<typename... Args>
-		TComponent(Args&&... args):
-			_obj(std::forward<Args>(args)...)
-		{}
+			///
+			///@brief Usable internal type
+			///
+			///
+			using Object = ObjectT;
 
-		///
-		///@brief Conversion operator into the usable internal type
-		///
-		///
-		operator Object &()
-		{
-			return _obj;
-		}
+			///
+			///@brief Construct a new TComponent object
+			///
+			///@tparam Args Construction args types
+			///@param args Construction args
+			///
+			template<typename... Args>
+			TComponent(Args&&... args):
+				_obj(std::forward<Args>(args)...)
+			{}
 
-		///
-		///@brief Const Conversion operator into the usable internal type
-		///
-		///
-		operator const Object &() const
-		{
-			return _obj;
-		}
+			///
+			///@brief Conversion operator into the usable internal type
+			///
+			///
+			operator Object &()
+			{
+				return _obj;
+			}
 
-		///
-		///@brief Dereferencer operator
-		///
-		///@return Object& internal usable object
-		///
-		Object			&operator*()
-		{
-			return _obj;
-		}
+			///
+			///@brief Const Conversion operator into the usable internal type
+			///
+			///
+			operator const Object &() const
+			{
+				return _obj;
+			}
 
-		///
-		///@brief Const Dereferencer operator
-		///
-		///@return const Object& internal usable object
-		///
+			///
+			///@brief Dereferencer operator
+			///
+			///@return Object& internal usable object
+			///
+			Object			&operator*()
+			{
+				return _obj;
+			}
 
-		const Object	&operator*() const
-		{
-			return _obj;
-		}
+			///
+			///@brief Const Dereferencer operator
+			///
+			///@return const Object& internal usable object
+			///
+
+			const Object	&operator*() const
+			{
+				return _obj;
+			}
 
 
-		///
-		///@brief Member dereferencer operator
-		///
-		///@return Object* internal usable object ptr
-		///
-		Object			*operator->()
-		{
-			return &_obj;
-		}
+			///
+			///@brief Member dereferencer operator
+			///
+			///@return Object* internal usable object ptr
+			///
+			Object			*operator->()
+			{
+				return &_obj;
+			}
 
-		///
-		///@brief Member dereferencer operator
-		///
-		///@return const Object* internal usable object ptr
-		///
-		const Object	*operator->() const
-		{
-			return &_obj;
-		}
+			///
+			///@brief Member dereferencer operator
+			///
+			///@return const Object* internal usable object ptr
+			///
+			const Object	*operator->() const
+			{
+				return &_obj;
+			}
 
-	protected:
-	private:
+		protected:
+		private:
 
-	Object		_obj;
-	EntityID	_parent;
-};
+		Object		_obj;
+		EntityID	_parent;
+	};
+}
 
 #endif /* !TCOMPONENT_HPP_ */

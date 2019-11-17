@@ -11,24 +11,27 @@
 #include <cinttypes>
 #include <typeindex>
 
-///
-///@brief Component table interface
-///
-/// Used mostly for runtime binding of containers
-///
-class IComponentTable {
-	public:
+namespace ECS {
 
-		virtual ~IComponentTable() = default;
+	///
+	///@brief Component table interface
+	///
+	/// Used mostly for runtime binding of containers
+	///
+	class IComponentTable {
+		public:
 
-		///
-		///@brief Get the Type ID of the components in the table
-		///
-		///
-		virtual std::type_index	getTypeID() const = 0;
+			virtual ~IComponentTable() = default;
 
-	protected:
-	private:
-};
+			///
+			///@brief Get the Type ID of the components in the table
+			///
+			///
+			virtual std::type_index	getTypeID() const = 0;
+
+		protected:
+		private:
+	};
+}
 
 #endif /* !ICOMPONENTTABLE_HPP_ */

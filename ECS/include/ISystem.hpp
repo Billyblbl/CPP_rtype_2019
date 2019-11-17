@@ -8,24 +8,27 @@
 #ifndef ISYSTEM_HPP_
 #define ISYSTEM_HPP_
 
-///
-///@brief System interface
-///
-/// Used mostly for runtime binding of containers
-///
-class ISystem {
-	public:
+namespace ECS {
 
-		virtual ~ISystem();
+	///
+	///@brief System interface
+	///
+	/// Used mostly for runtime binding of containers
+	///
+	class ISystem {
+		public:
 
-		///
-		///@brief reload the system
-		///
-		///
-		virtual void	reload();
+			virtual ~ISystem();
 
-	protected:
-	private:
-};
+			///
+			///@brief reload the system
+			///
+			///
+			virtual void	reload();
+
+		protected:
+		private:
+	};
+}
 
 #endif /* !ISYSTEM_HPP_ */
