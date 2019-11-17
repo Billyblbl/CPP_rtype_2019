@@ -15,6 +15,7 @@
 #include "IListener.hpp"
 #include "TListener.hpp"
 #include "Scheduler.hpp"
+#include "TGuarded.hpp"
 
 ///
 ///@brief Central event mediator object
@@ -65,11 +66,12 @@ class EventMediator {
 		void	trigger(const EventType &event)
 		{
 			if (_listeners.find(typeid(EventType)) != _listeners.end())
-				_pending.emplace(typeid(EventType), event);
+				_pending->emplace(typeid(EventType), event);
 		}
 
 	protected:
 	private:
+
 
 		///
 		///@brief process task
@@ -78,11 +80,12 @@ class EventMediator {
 		void	processPendingEvents();
 
 		using EventHolder = std::pair<std::type_index, std::any>;
+		using EventQueue = TGuarded<std::queue<EventHolder>>;
 		using ListenerList = std::vector<IListener *>;
 		using ListenerMap = std::unordered_map<std::type_index, ListenerList>;
 
-		std::queue<EventHolder>	_pending;
-		ListenerMap				_listeners;
+		EventQueue	_pending;
+		ListenerMap	_listeners;
 };
 
 #endif /* !EVENTMEDIATOR_HPP_ */

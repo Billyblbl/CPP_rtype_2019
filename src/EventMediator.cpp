@@ -5,6 +5,7 @@
 ** event mediator object definition
 */
 
+#include <optional>
 #include "EventMediator.hpp"
 
 EventMediator::EventMediator(Scheduler &scheduler)
@@ -20,10 +21,20 @@ EventMediator::EventMediator(Scheduler &scheduler)
 
 void	EventMediator::processPendingEvents()
 {
-	while (!_pending.empty()) {
-		auto	[type, event] = std::move(_pending.front());
-		_pending.pop();
-		for (auto &listener : _listeners[type])
-			listener->notify(event);
+	while (!_pending->empty()) {
+		auto maybeEvent = [&]()->std::optional<EventHolder> {
+			auto	locked = *_pending;
+			if (!locked->empty()) {
+				auto	event = std::move(locked->front());
+				locked->pop();
+				return std::optional{event};
+			} else
+				return std::nullopt;
+		}();
+		if (maybeEvent.has_value()) {
+			auto	[type, event] = maybeEvent.value();
+			for (auto &listener : _listeners[type])
+				listener->notify(event);
+		}
 	}
 }

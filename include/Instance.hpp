@@ -11,6 +11,9 @@
 #include "Scheduler.hpp"
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
+#include "EventMediator.hpp"
+#include "EntityPool.hpp"
+#include "TGuarded.hpp"
 
 ///
 ///@brief Game instance object
@@ -19,9 +22,13 @@
 class Instance {
 	public:
 
-		Scheduler				scheduler;
-		ECS::ComponentManager	components;
-		ECS::SystemManager		systems;
+		Instance();
+
+		TGuarded<ECS::EntityPool>		entities;
+		TGuarded<ECS::ComponentManager>	components;
+		TGuarded<ECS::SystemManager>	systems;
+		TGuarded<Scheduler>				scheduler;
+		TGuarded<EventMediator>			events;
 
 	protected:
 	private:
