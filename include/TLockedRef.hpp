@@ -40,8 +40,8 @@ class TLockedRef {
 		///@param mutex 
 		///
 		TLockedRef(T &ref, Mutex &mutex):
-			_ref(ref),
-			_guard(mutex)
+			_guard(mutex),
+			_ref(ref)
 		{}
 
 		///
@@ -93,8 +93,8 @@ class TLockedRef {
 	protected:
 	private:
 
-		T		&_ref;
 		Guard	_guard;
+		T		&_ref;
 };
 
 #endif /* !TLOCKEDREF_HPP_ */
