@@ -11,6 +11,15 @@
 #include <mutex>
 #include "TLockedRef.hpp"
 
+///
+///@brief mutex guarded type
+///
+/// all operation made through this wrapper template will be
+/// executed each under their own lock guard
+///
+///@tparam T Object wrapped
+///@tparam std::mutex mutex type used to guard the object, defaulted to std::mutex
+///
 template<typename T, typename Mutex = std::mutex>
 class TGuarded {
 	public:
@@ -85,6 +94,15 @@ class TGuarded {
 			return _obj;
 		}
 
+		///
+		///@brief Arrays subscript operator
+		///
+		/// call the object's array subscript operator under guard
+		///
+		///@tparam I Index type forwarded to the object's array subscript operator
+		///@tparam Guard Guard type used to lock the mutex, defaulted to std::lock_guard<Mutex>
+		///@param i Indexforwarded to the object's array subscript operator
+		///
 		template<typename I, typename Guard = std::lock_guard<Mutex>>
 		auto operator[](I &&i)
 		{
@@ -92,6 +110,15 @@ class TGuarded {
 			return _obj[std::forward<I>(i)];
 		}
 
+		///
+		///@brief Arrays subscript const operator
+		///
+		/// call the object's array subscript const operator under guard
+		///
+		///@tparam I Index type forwarded to the object's array subscript const operator
+		///@tparam Guard Guard type used to lock the mutex, defaulted to std::lock_guard<Mutex>
+		///@param i Index forwarded to the object's array subscript const operator
+		///
 		template<typename I, typename Guard = std::lock_guard<Mutex>>
 		auto operator[](I &&i) const
 		{
@@ -99,6 +126,15 @@ class TGuarded {
 			return _obj[std::forward<I>(i)];
 		}
 
+		///
+		///@brief Call operator
+		///
+		/// call the object's call operator under guard
+		///
+		///@tparam Args Types of the arguments forwarded to the object's call operator
+		///@tparam Guard Guard type used to lock the mutex, defaulted to std::lock_guard<Mutex>
+		///@param args Arguments forwarded to the object's call operator
+		///
 		template<typename... Args, typename Guard = std::lock_guard<Mutex>>
 		auto operator()(Args&&... args)
 		{
@@ -106,6 +142,15 @@ class TGuarded {
 			return _obj(std::forward<Args>(args)...);
 		}
 
+		///
+		///@brief Call operator
+		///
+		/// call the object's call const operator under guard
+		///
+		///@tparam Args Types of the arguments forwarded to the object's call const operator
+		///@tparam Guard Guard type used to lock the mutex, defaulted to std::lock_guard<Mutex>
+		///@param args Arguments forwarded to the object's call const operator
+		///
 		template<typename... Args, typename Guard = std::lock_guard<Mutex>>
 		auto operator()(Args&&... args) const
 		{
