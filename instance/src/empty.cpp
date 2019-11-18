@@ -1,1 +1,0 @@
-const int azertyuio = 0;
