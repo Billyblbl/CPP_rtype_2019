@@ -51,6 +51,32 @@ function(make_rengine_package package_name package_dir)
 	add_library(${package_name} SHARED ${${package_name}_SOURCE})
 endfunction(make_rengine_package)
 
+# check if Doxygen is installed
+find_package(Doxygen)
+
+# indicate the documentation build as an option
+option(BUILD_DOC "Build documentation" ${DOXYGEN_FOUND})
+
+if (${BUILD_DOC} AND ${DOXYGEN_FOUND})
+	# set input and output files
+	set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
+	set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+	# request to configure the file
+	configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+	message(STATUS "Doxygen build started")
+
+	add_custom_target(docs
+		COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating API documentation with Doxygen"
+		VERBATIM
+	)
+	message(STATUS "Doxygen build complete")
+elseif(${BUILD_DOC})
+	message("Doxygen need to be installed to generate the doxygen documentation")
+endif (${BUILD_DOC} AND ${DOXYGEN_FOUND})
+
 # R-Engine
 
 message(STATUS "Configuring R-Engine Build")
