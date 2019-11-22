@@ -98,6 +98,15 @@ namespace ECS {
 				return &_obj;
 			}
 
+			///
+			///@brief get the entity ID of the component
+			///
+			///
+			EntityID		getID() const
+			{
+				return _parent;
+			}
+
 		protected:
 		private:
 

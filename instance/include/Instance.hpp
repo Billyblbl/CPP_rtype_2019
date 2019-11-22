@@ -22,13 +22,13 @@
 class Instance {
 	public:
 
-		Instance();
+		Instance() = default;
 
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
 		TGuarded<ECS::SystemManager>	systems;
 		TGuarded<Scheduler>				scheduler;
-		TGuarded<EventMediator>			events;
+		// TGuarded<EventMediator>			events;
 
 	protected:
 	private:

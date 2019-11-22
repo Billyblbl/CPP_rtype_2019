@@ -21,7 +21,9 @@
 ///@brief Central event mediator object
 ///
 ///
-class EventMediator {
+class [[deprecated(
+	"Old Event mediator can easily call UB as it bypasses all parallelization securities"
+	)]] EventMediator {
 	public:
 
 		///
