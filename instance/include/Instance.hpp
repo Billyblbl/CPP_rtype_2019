@@ -28,7 +28,6 @@ class Instance {
 		TGuarded<ECS::ComponentManager>	components;
 		TGuarded<ECS::SystemManager>	systems;
 		TGuarded<Scheduler>				scheduler;
-		// TGuarded<EventMediator>			events;
 
 	protected:
 	private:
