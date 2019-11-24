@@ -76,6 +76,7 @@ class JSONValue {
 		const Value		&getVal() const;
 
 		static JSONValue	parseJSON(const std::string &input);
+		static JSONValue	loadJSON(const std::string &input);
 
 	protected:
 	private:

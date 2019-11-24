@@ -6,6 +6,7 @@
 */
 
 #include "JSONValue.hpp"
+#include "JSONParser.hpp"
 
 // JSONValue::JSONValue()
 // {
@@ -53,4 +54,14 @@ JSONValue::Value		&JSONValue::getVal()
 const JSONValue::Value	&JSONValue::getVal() const
 {
 	return _val;
+}
+
+JSONValue				JSONValue::parseJSON(const std::string &input)
+{
+	return JSONParser{}.parse(input);
+}
+
+JSONValue				JSONValue::loadJSON(const std::string &path)
+{
+	return JSONParser{}.load(path);
 }
