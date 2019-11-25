@@ -34,7 +34,8 @@ namespace ECS {
 			///@param args Construction args
 			///
 			template<typename... Args>
-			TComponent(Args&&... args):
+			TComponent(EntityID parent, Args&&... args):
+				_parent(parent),
 				_obj(std::forward<Args>(args)...)
 			{}
 
@@ -98,11 +99,20 @@ namespace ECS {
 				return &_obj;
 			}
 
+			///
+			///@brief Get the ID of the parent entity
+			///
+			///
+			EntityID		getID() const
+			{
+				return _parent;
+			}
+
 		protected:
 		private:
 
-		Object		_obj;
 		EntityID	_parent;
+		Object		_obj;
 	};
 }
 
