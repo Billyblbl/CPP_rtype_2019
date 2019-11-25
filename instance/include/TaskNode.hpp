@@ -33,13 +33,13 @@ class TaskNode {
 		TaskNode(std::function<void()> &&func);
 
 		///
-		///@brief Construct a new Task Node object with mutators
+		///@brief Construct a new Task Node object with writers
 		///
 		///
 		template<typename... TypeIds>
-		TaskNode(std::function<void()> &&func, TypeIds&&... mutators):
+		TaskNode(std::function<void()> &&func, TypeIds&&... writers):
 			_task(func),
-			_mutatorIDs({std::forward<TypeIds>(mutators)...})
+			_writerIDs({std::forward<TypeIds>(writers)...})
 		{}
 
 		///
@@ -73,11 +73,18 @@ class TaskNode {
 		int			getPrerequisites() const;
 
 		///
-		///@brief Adds a mutator type index to the node
+		///@brief Adds a writer type index to the node
 		///
-		///@param mutatorType type index of the writer type of the mutator
+		///@param writerType type index of the writer type of the writer
 		///
-		void		addMutator(const std::type_index &mutatorType);
+		void		addWriter(const std::type_index &writerType);
+
+		///
+		///@brief Adds a reader type index to the node
+		///
+		///@param writerType type index of the writer type of the writer
+		///
+		void		addReader(const std::type_index &readerType);
 
 		///
 		///@brief Adds a parent node to this
@@ -174,7 +181,8 @@ class TaskNode {
 	private:
 
 		std::function<void()>			_task;
-		std::vector<std::type_index>	_mutatorIDs;
+		std::vector<std::type_index>	_writerIDs;
+		std::vector<std::type_index>	_readerIDs;
 		Hierachy						_parentTasks;
 		Hierachy						_childrenTasks;
 		int								_prerequisites;

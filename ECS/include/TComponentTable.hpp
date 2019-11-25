@@ -108,7 +108,7 @@ namespace ECS {
 				if (it != end())
 					return *it;
 				else
-					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + ent);
+					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
 			}
 
 			auto	&operator[](EntityID ent) const
@@ -117,7 +117,7 @@ namespace ECS {
 				if (it != end())
 					return *it;
 				else
-					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + ent);
+					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
 			}
 
 			auto	find(EntityID ent)
@@ -193,7 +193,7 @@ namespace ECS {
 			{
 				auto	it = find(id);
 				if (it == end())
-					throw std::invalid_argument(std::string(__func__) + " : Component not found : " + id);
+					throw std::invalid_argument(std::string(__func__) + " : Component not found : " + std::to_string(id));
 				erase(it);
 			}
 
