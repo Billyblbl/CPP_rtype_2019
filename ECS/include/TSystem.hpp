@@ -69,9 +69,9 @@ namespace ECS {
 			template<typename... TaskComponents, class Task = TTask<TaskComponents...>>
 			auto	declareTask(typename Task::ExecutorType &task)
 			{
-				auto	taskRemover = [this](TaskNode *task){_scheduler.removeTask(*task);};
+				auto	taskRemover = [this](TaskNode *task){_scheduler->removeTask(*task);};
 				return _tasks.emplace(
-					&_scheduler.postTask(TTask<TaskComponents...>(
+					&_scheduler->postTask(TTask<TaskComponents...>(
 						std::get<TableNonConst<TaskComponents>>(_componentsTables)...,
 						task
 					)
