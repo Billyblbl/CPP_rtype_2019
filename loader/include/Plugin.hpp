@@ -11,6 +11,8 @@
 #include <functional>
 
 	#if defined(_WIN32)
+
+//Windows
 		#include <windows.h> 
 
 class Plugin {
@@ -38,6 +40,8 @@ class Plugin {
 };
 
 	#else
+
+//UNIX
 		#include <memory>
 		#include <dlfcn.h>
 

@@ -8,6 +8,7 @@
 #include "Plugin.hpp"
 
 #if defined(_WIN32)
+//Windows
 
 Plugin::Plugin(const std::string &path):
 	_handle{LoadLibrary(path.c_str())}
@@ -23,6 +24,7 @@ Plugin::~Plugin()
 }
 
 #else
+//UNIX
 
 Plugin::Plugin(const std::string &path):
 	_handle{dlopen(path.c_str(), RTLD_NOW), [](void *hdl){
