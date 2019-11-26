@@ -9,6 +9,6 @@
 
 AssetCache  &AssetCache::getGlobalCache()
 {
-    static  AssetCache  cache;
-    return cache;
+	static  AssetCache  cache;
+	return cache;
 }
