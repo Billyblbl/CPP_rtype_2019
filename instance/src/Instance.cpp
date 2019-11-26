@@ -7,6 +7,6 @@
 
 #include "Instance.hpp"
 
-Instance::Instance():
-	events{*scheduler}
-{}
+// Instance::Instance():
+// 	events{*scheduler}
+// {}

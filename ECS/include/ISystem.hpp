@@ -8,6 +8,8 @@
 #ifndef ISYSTEM_HPP_
 #define ISYSTEM_HPP_
 
+#include "Scheduler.hpp"
+
 namespace ECS {
 
 	///
@@ -24,7 +26,9 @@ namespace ECS {
 			///@brief reload the system
 			///
 			///
-			virtual void	reload();
+			virtual void	reload() = 0;
+
+			virtual void	rebind(Scheduler &scheduler) = 0;
 
 		protected:
 		private:
