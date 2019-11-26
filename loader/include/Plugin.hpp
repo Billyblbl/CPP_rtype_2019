@@ -8,14 +8,102 @@
 #ifndef PLUGIN_HPP_
 #define PLUGIN_HPP_
 
-#include <memory>
 #include <functional>
 
-#if defined(_WIN32)
-	#include <windows.h> 
-#else
-	#include <dlfcn.h>
-#endif
+	#if defined(_WIN32)
+		#include <windows.h> 
+
+class Plugin {
+	public:
+
+		Plugin(const std::string &path);
+
+		template<typename Callable = long(), typename... Args>
+		auto	call(const std::string &key, Args&&... args)
+		{
+			auto	thing = GetProcAddress(_handle, key);
+			if (thing == NULL)
+				throw std::runtime_error(std::string(__func__) + " : " + GetLastError());
+			return std::function<Callable>(thing)(std::forward<Args>(args)...);
+		}
+
+		~Plugin();
+
+	protected:
+	private:
+
+
+	HINSTANCE	_handle;
+
+};
+
+	#else
+		#include <memory>
+		#include <dlfcn.h>
+
+class Plugin {
+	public:
+
+		Plugin(const std::string &path);
+
+		~Plugin() = default;
+
+		template<typename Callable = long(), typename... Args>
+		auto	call(const std::string &key, Args&&... args)
+		{
+			using Functional = std::function<Callable>;
+			using FctPtr = FunctionalTarget<Callable>;
+			dlerror();
+			auto	*thing = dlsym(_handle.get(), key.c_str());
+			auto	*err = dlerror();
+			if (err != nullptr)
+				throw std::runtime_error(std::string(__func__) + " : " + err);
+			Functional	callable(reinterpret_cast<FctPtr>(thing));
+			return callable(std::forward<Args>(args)...);
+		}
+
+		template<typename Callable = long()>
+		auto	get(const std::string &key)
+		{
+			using Functional = std::function<Callable>;
+			using FctPtr = FunctionalTarget<Callable>;
+			dlerror();
+			auto	*thing = dlsym(_handle.get(), key.c_str());
+			auto	*err = dlerror();
+			if (err != nullptr)
+				throw std::runtime_error(std::string(__func__) + " : " + err);
+			return Functional(reinterpret_cast<FctPtr>(thing));
+		}
+
+	protected:
+	private:
+
+		template<typename T>
+		struct FunctionalTraits {};
+
+		template<typename R, typename... Args>
+		struct FunctionalTraits<std::function<R(Args...)>> {
+			using resultType = R;
+			using signature = R(*)(Args...);
+			struct argumentTypes {
+				using asTuple = std::tuple<Args...>;
+
+				template<size_t index>
+				using arg = std::tuple_element_t<index, asTuple>;
+			};
+		};
+
+		template<typename Callable>
+		using FunctionalTarget = typename FunctionalTraits<std::function<Callable>>::signature;
+
+		std::unique_ptr<void, std::function<void(void *)>>	_handle;
+
+};
+
+
+
+	#endif /* !OS check */
+#endif /* !PLUGIN_HPP_ */
 
 // move this to plugin interfaces thingy
 // #if defined(_WIN32)
@@ -26,55 +114,3 @@
 //   #define PLUGIN_VISIBLE __attribute__ ((visibility ("default")))
 // #endif
 
-class Plugin {
-	public:
-
-		Plugin(const std::string &path);
-
-#if defined(_WIN32)
-		~Plugin();
-#else
-		~Plugin() = default;
-#endif
-
-		//FARPROC returned by windows' GetProcAddr and its fuckeries of
-		// non compatible pointer types means that we have no guarantes
-		// that we can use those like we'd do on linux, so no windows
-		// version for now
-		// TODO Find and implement a windows way to do this
-
-		template<typename T>
-		T		&getFromSymbol(const std::string &key)
-		{
-			dlerror();
-			auto	*thing = dlsym(_handle.get(), key.c_str());
-			auto	*err = dlerror();
-			if (err != nullptr)
-				throw std::runtime_error(std::string(__func__) + " : " + err);
-			T		&cast = dynamic_cast<T &>(thing);
-			return cast;
-		}
-
-		template<typename Callable, typename... Args>
-		auto	callFromSymbol(const std::string &key, Args&&... args)
-		{
-			dlerror();
-			auto	*thing = dlsym(_handle.get(), key.c_str());
-			auto	*err = dlerror();
-			if (err != nullptr)
-				throw std::runtime_error(std::string(__func__) + " : " + err);
-			return Callable(thing)(std::forward<Args>(args)...);
-		}
-
-	protected:
-	private:
-
-#if defined(_WIN32)
-		HINSTANCE	_handle;
-#else
-		std::unique_ptr<void, std::function<void(void *)>>	_handle;
-#endif
-
-};
-
-#endif /* !PLUGIN_HPP_ */
