@@ -12,6 +12,7 @@
 #include "ISystem.hpp"
 #include "TComponentTable.hpp"
 #include "TTask.hpp"
+#include "Scheduler.hpp"
 
 namespace ECS {
 
@@ -24,17 +25,19 @@ namespace ECS {
 	class TSystem : public ISystem {
 		public:
 
-			TSystem(TComponentTable<Components>&... tables):
-				_componentsTables(std::forward<TComponentTable<Components>>(tables)...)
+			TSystem(Scheduler &scheduler, TComponentTable<Components>&... tables):
+				_componentsTables(std::forward<TComponentTable<Components>>(tables)...),
+				_scheduler(&scheduler)
 			{}
 
 			///
 			///@brief Reload the system
 			///
 			///
-			void	reload()
+			void	reload() override
 			{
-				onReload();
+				_tasks.clear();
+				onLoad();
 			}
 
 
@@ -45,6 +48,12 @@ namespace ECS {
 			///
 			using TablePacket = std::tuple<TComponentTable<Components> &...>;
 
+			void	rebind(Scheduler &scheduler) override
+			{
+				_tasks.clear();
+				_scheduler = &scheduler;
+				onLoad();
+			}
 
 		protected:
 
@@ -60,21 +69,28 @@ namespace ECS {
 			template<typename... TaskComponents, class Task = TTask<TaskComponents...>>
 			auto	declareTask(typename Task::ExecutorType &task)
 			{
-				return TTask<TaskComponents...>(
-					std::get<TableNonConst<TaskComponents>>(_componentsTables)...,
-					task
-				);
+				auto	taskRemover = [this](TaskNode *task){_scheduler.removeTask(*task);};
+				return _tasks.emplace(
+					&_scheduler.postTask(TTask<TaskComponents...>(
+						std::get<TableNonConst<TaskComponents>>(_componentsTables)...,
+						task
+					)
+				), taskRemover);
 			}
 
 			///
 			///@brief Free for override event triggered on call to reload
 			///
 			///
-			virtual void	onReload() {}
+			virtual void	onLoad() {}
+
+			using TaskSubscription = std::unique_ptr<TaskNode, void(TaskNode *)>;
 
 		private:
 
-			TablePacket	_componentsTables;
+			TablePacket						_componentsTables;
+			Scheduler						*_scheduler;
+			std::vector<TaskSubscription>	_tasks;
 	};
 }
 
