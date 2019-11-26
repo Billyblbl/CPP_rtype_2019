@@ -13,6 +13,7 @@
 #include <memory>
 #include "ISystem.hpp"
 #include "TSystem.hpp"
+#include "Scheduler.hpp"
 
 namespace ECS {
 
@@ -23,6 +24,9 @@ namespace ECS {
 	class SystemManager {
 		public:
 
+			SystemManager(Scheduler &sheduler):
+				_scheduler(&sheduler)
+			{}
 
 			template<typename SystemType>
 			auto		&getSystem()
@@ -47,7 +51,7 @@ namespace ECS {
 				_systems.emplace(
 					std::type_index(typeid(SystemType)),
 					std::unique_ptr<ISystem>(
-						std::make_unique<SystemType>(std::forward<Args>(args)...)
+						std::make_unique<SystemType>(*_scheduler, std::forward<Args>(args)...)
 					)
 				);
 			}
@@ -59,12 +63,28 @@ namespace ECS {
 				_systems.erase(typeid(SystemType));
 			}
 
+			void	rebind(Scheduler &scheduler)
+			{
+				_scheduler = &scheduler;
+				for (auto &[type, system] : _systems) {
+					system->rebind(scheduler);
+				}
+			}
+
+			void	reload()
+			{
+				for (auto &[type, system] : _systems) {
+					system->reload();
+				}
+			}
+
 		protected:
 		private:
 
 			using SystemMap = std::unordered_map<std::type_index, std::unique_ptr<ISystem>>;
 
 			SystemMap	_systems;
+			Scheduler	*_scheduler;
 	};
 }
 

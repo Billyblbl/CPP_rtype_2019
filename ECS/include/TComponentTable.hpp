@@ -49,7 +49,7 @@ namespace ECS {
 			///@brief Conversion operator into internal collection type
 			///
 			///
-			operator auto &()
+			[[deprecated]] operator auto &()
 			{
 				return _components;
 			}
@@ -58,7 +58,7 @@ namespace ECS {
 			///@brief Const conversion operator into internal collection type
 			///
 			///
-			operator const auto &()
+			[[deprecated]] operator const auto &()
 			{
 				return _components;
 			}
@@ -67,7 +67,7 @@ namespace ECS {
 			///@brief Get the internal collection object
 			///
 			///
-			auto	&get()
+			[[deprecated]] auto	&get()
 			{
 				return _components;
 			}
@@ -76,7 +76,7 @@ namespace ECS {
 			///@brief Get the const internal collection object
 			///
 			///
-			const auto	&get() const
+			[[deprecated]]const auto	&get() const
 			{
 				return _components;
 			}
@@ -85,7 +85,7 @@ namespace ECS {
 			///@brief Member dereferencer of the internal collection object
 			///
 			///
-			auto		*operator->()
+			[[deprecated]] auto		*operator->()
 			{
 				return &_components;
 			}
@@ -94,15 +94,113 @@ namespace ECS {
 			///@brief Member const dereferencer of the internal const collection object
 			///
 			///
-			const auto	*operator->() const
+			[[deprecated]] const auto	*operator->() const
 			{
 				return &_components;
 			}
 
+
+			//std binary_search only returns a bool for some reason so this is indexer operator
+			// is a reimplementation of the algorithm that actually returns a thing
+			auto	&operator[](EntityID ent)
+			{
+				auto it = find(ent);
+				if (it != end())
+					return *it;
+				else
+					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
+			}
+
+			auto	&operator[](EntityID ent) const
+			{
+				auto it = find(ent);
+				if (it != end())
+					return *it;
+				else
+					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
+			}
+
+			auto	find(EntityID ent)
+			{
+				auto	begin = begin();
+				auto	end = end();
+				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
+					if (middle->getID() < ent) {
+						begin = middle + 1;
+					} else if (middle->getID() > ent) {
+						end = middle;
+					} else
+						return middle;
+				}
+				return end();
+			}
+
+			auto	find(EntityID ent) const
+			{
+				auto	begin = begin();
+				auto	end = end();
+				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
+					if (middle->getID() < ent) {
+						begin = middle + 1;
+					} else if (middle->getID() > ent) {
+						end = middle;
+					} else
+						return middle;
+				}
+				return end();
+			}
+
+			auto	begin()
+			{
+				return _components.begin();
+			}
+
+			auto	end()
+			{
+				return _components.end();
+			}
+
+			auto	begin() const
+			{
+				return _components.begin();
+			}
+
+			auto	end() const
+			{
+				return _components.end();
+			}
+
+			template<typename... Args>
+			auto	&emplace(EntityID id , Args&&... args)
+			{
+				return _components.emplace_back(id, std::forward<Args>(args)...);
+			}
+
+			using TableType = std::vector<TComponent<ComponentType>>;
+			using iterator = typename TableType::iterator;
+
+			void	erase(iterator it)
+			{
+				_components.erase(it);
+			}
+
+			void	erase(iterator begin, iterator end)
+			{
+				_components.erase(begin, end);
+			}
+
+			void	remove(EntityID id)
+			{
+				auto	it = find(id);
+				if (it == end())
+					throw std::invalid_argument(std::string(__func__) + " : Component not found : " + std::to_string(id));
+				erase(it);
+			}
+
 		protected:
 		private:
-			std::vector<TComponent<ComponentType>>	_components;
-			std::type_index							_type;
+			TableType			_components;
+			std::type_index		_type;
 	};
 
 	///
@@ -114,7 +212,7 @@ namespace ECS {
 	///
 	///@warning meant to be used with MaybeConstTable template, other uses are dangerous
 	///
-	///@tparam Component 
+	///@tparam Component
 	///
 	template<typename Component>
 	using TableNonConst = TComponentTable<std::remove_const_t<Component>>;
