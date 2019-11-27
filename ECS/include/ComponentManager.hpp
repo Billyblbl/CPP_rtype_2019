@@ -76,6 +76,13 @@ namespace ECS {
 				_tables.erase(typeid(ComponentType));
 			}
 
+			template<typename ComponentType>
+			bool		hasTable()
+			{
+				static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
+				return _tables.find(typeid(ComponentType)) != _tables.end();
+			}
+
 		protected:
 		private:
 
