@@ -68,9 +68,12 @@ class Scheduler : public ATaskPresenter {
 	auto	&postTask(const ECS::TTask<Components...> &task)
 	{
 		auto &newNode = _taskgraph.emplace_back(task);
-		(..., [](Components *ignore = nullptr){
-			if constexpr (!std::is_const_v<std::remove_reference_t<Components>>) {
-				newNode.addMutator(typeid(Components));
+		(..., [&newNode](Components *ignore = nullptr){
+			using Comp = std::remove_reference_t<Components>;
+			if constexpr (!std::is_const_v<Comp>) {
+				newNode.addWriter(typeid(std::remove_const_t<Comp>));
+			} else {
+				newNode.addReader(typeid(std::remove_const_t<Comp>));
 			}
 		}());
 		newNode.linkParent(_beginNode);
