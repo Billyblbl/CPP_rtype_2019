@@ -22,7 +22,7 @@
 class Instance {
 	public:
 
-		Instance() = default;
+		Instance();
 
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;

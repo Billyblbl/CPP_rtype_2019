@@ -10,7 +10,7 @@ set (SERVER_EXEC "r-type_server")
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
-include_directories(${CMAKE_INCLUDE_PATH} include)
+include_directories(${CMAKE_INCLUDE_PATH} ${CONAN_INCLUDE_DIRS} include)
 
 function(get_include LISTNAME)
 	set(LOCALDIR ${LISTNAME}_get_src_dir_local)
@@ -86,18 +86,33 @@ get_src(RENGINE_SOURCE ${RENGINE_DIR})
 include_directories(${RENGINE_INCLUDE})
 add_library(${ENGINE_LIB} SHARED ${RENGINE_SOURCE})
 
+# Packages
+
+message(STATUS "Configuring R-Engine Packages Build")
+
+make_rengine_package(Graphical graphical)
+target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
+
+foreach(lib ${CONAN_LIBS})
+	message(STATUS ${lib})
+endforeach(lib)
+
 # Client
 
 message(STATUS "Configuring R-Type Client Build")
 file(GLOB CLIENT_SOURCE "client/src/*.cpp")#tmp
 include_directories(client/include)
 add_executable(${CLIENT_EXEC} ${CLIENT_SOURCE})
-target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding sfml + r_engine
+target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB} Graphical)# adding sfml + r_engine
 
 # Server
 
 message(STATUS "Configuring R-Type Server Build")
-file(GLOB SERVER_SOURCE "client/src/*.cpp")#tmp
+file(GLOB SERVER_SOURCE "server/src/*.cpp")#tmp
 include_directories(server/include)
 add_executable(${SERVER_EXEC} ${SERVER_SOURCE})
 target_link_libraries(${SERVER_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding r_engine
+
+
+
+set(VERBOSE)

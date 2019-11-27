@@ -8,6 +8,7 @@
 #ifndef TCOMPONENT_HPP_
 #define TCOMPONENT_HPP_
 
+#include <memory>
 #include "EntityPool.hpp"
 
 namespace ECS {
@@ -38,6 +39,8 @@ namespace ECS {
 				_parent(parent),
 				_obj(std::forward<Args>(args)...)
 			{}
+
+			TComponent(TComponent &&) = default;
 
 			///
 			///@brief Conversion operator into the usable internal type
