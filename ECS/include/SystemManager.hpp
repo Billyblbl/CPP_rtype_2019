@@ -63,6 +63,13 @@ namespace ECS {
 				_systems.erase(typeid(SystemType));
 			}
 
+			template<typename SystemType>
+			bool		hasSystem()
+			{
+				static_assert(std::is_base_of_v<ISystem, SystemType>, "not a System");
+				return _systems.find(typeid(SystemType)) != _systems.end();
+			}
+
 			void	rebind(Scheduler &scheduler)
 			{
 				_scheduler = &scheduler;
