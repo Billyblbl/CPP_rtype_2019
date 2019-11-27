@@ -67,15 +67,17 @@ namespace ECS {
 			///@return auto Built task
 			///
 			template<typename... TaskComponents, class Task = TTask<TaskComponents...>>
-			auto	declareTask(typename Task::ExecutorType &task)
+			auto	&declareTask(const typename Task::ExecutorType &task)
 			{
 				auto	taskRemover = [this](TaskNode *task){_scheduler->removeTask(*task);};
-				return _tasks.emplace(
-					&_scheduler->postTask(TTask<TaskComponents...>(
-						std::get<TableNonConst<TaskComponents>>(_componentsTables)...,
-						task
-					)
-				), taskRemover);
+				return _tasks.emplace_back(
+					&_scheduler->postTask(
+						TTask<TaskComponents...>(
+							std::get<TableNonConst<TaskComponents> &>(_componentsTables)...,
+							task
+						)
+					),
+				taskRemover);
 			}
 
 			///
@@ -84,7 +86,7 @@ namespace ECS {
 			///
 			virtual void	onLoad() {}
 
-			using TaskSubscription = std::unique_ptr<TaskNode, void(TaskNode *)>;
+			using TaskSubscription = std::unique_ptr<TaskNode, std::function<void(TaskNode *)>>;
 
 		private:
 
