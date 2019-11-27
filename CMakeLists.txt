@@ -88,7 +88,7 @@ endif (${BUILD_DOC} AND ${DOXYGEN_FOUND})
 # R-Engine
 
 message(STATUS "Configuring R-Engine Build")
-set(RENGINE_DIR "ECS" "instance" "JSON" "loader")
+set(RENGINE_DIR "ECS" "instance" "JSON" "loader" "AssetCache")
 get_include(RENGINE_INCLUDE ${RENGINE_DIR})
 get_src(RENGINE_SOURCE ${RENGINE_DIR})
 include_directories(${RENGINE_INCLUDE})
