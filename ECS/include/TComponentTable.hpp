@@ -49,19 +49,19 @@ namespace ECS {
 			///@brief Conversion operator into internal collection type
 			///
 			///
-			[[deprecated]] operator auto &()
-			{
-				return _components;
-			}
+			// [[deprecated]] operator auto &()
+			// {
+			// 	return _components;
+			// }
 
 			///
 			///@brief Const conversion operator into internal collection type
 			///
 			///
-			[[deprecated]] operator const auto &()
-			{
-				return _components;
-			}
+			// [[deprecated]] operator const auto &()
+			// {
+			// 	return _components;
+			// }
 
 			///
 			///@brief Get the internal collection object
