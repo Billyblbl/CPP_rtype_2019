@@ -8,7 +8,9 @@
 #include <iostream>
 #include "ComponentManager.hpp"
 #include "TTask.hpp"
-#include "SystemManager.hpp"
+#include "Scheduler.hpp"
+#include "Instance.hpp"
+
 struct zeofizoifjzo {
 	zeofizoifjzo(int a, int b, double c):
 		i(a),
@@ -23,23 +25,39 @@ struct zeofizoifjzo {
 
 int	main(int, char *[])
 {
-	ECS::ComponentManager	m;
-	ECS::SystemManager		sm;
+	Instance	instance;
 
 	using type = zeofizoifjzo;
-	m.addTable<type>();
-	std::cout << m.getTable<type>().getTypeID().name() << std::endl;
-	m.getTable<type>()->emplace_back(1, 2, 3.1);
-	m.getTable<type>()->emplace_back(3, 4, 3.2);
-	m.getTable<type>()->emplace_back(5, 6, 3.3);
-	m.getTable<type>()->emplace_back(7, 8, 3.4);
-	m.getTable<type>()->emplace_back(9, 10, 3.5);
-	m.getTable<type>()->emplace_back(11, 12, 3.6);
-	auto &pppp = m.getTable<type>().get()[0];
+	instance.components->addTable<type>();
+	instance.components->addTable<int>();
+	ECS::TTask<const int>	t(instance.components->getTable<int>(), [](auto &){
+		std::cout << "lolilol" << std::endl;
+	});
+
+	//scheduler tests
+	auto & node = instance.scheduler->postTask(t);
+
+	for (int i = 0; i < 6; ++i) {
+		if (instance.scheduler->hasAvailableTask()) {
+			auto *ta = instance.scheduler->takeTask();
+			(*ta)();
+			instance.scheduler->reportTask(ta);
+		}
+	}
+
+	//table manipulation tests
+	std::cout << instance.components->getTable<type>().getTypeID().name() << std::endl;
+	instance.components->getTable<type>()->emplace_back(1, 2, 3.1);
+	instance.components->getTable<type>()->emplace_back(3, 4, 3.2);
+	instance.components->getTable<type>()->emplace_back(5, 6, 3.3);
+	instance.components->getTable<type>()->emplace_back(7, 8, 3.4);
+	instance.components->getTable<type>()->emplace_back(9, 10, 3.5);
+	instance.components->getTable<type>()->emplace_back(11, 12, 3.6);
+	auto &pppp = instance.components->getTable<type>().get()[0];
 	std::cout << pppp->i << ' ' << pppp->e << ' '  << pppp->zeiouher << std::endl;
 
 
-	ECS::TTask<type>	task(m.getTable<type>(), [](ECS::TComponentTable<zeofizoifjzo> &zbebs){
+	ECS::TTask<type>	task(instance.components->getTable<type>(), [](ECS::TComponentTable<zeofizoifjzo> &zbebs){
 		for (auto &beb : zbebs.get()) {
 			std::cout << beb->i << ' '  << beb->e << ' '  << beb->zeiouher << std::endl;
 		}
@@ -51,6 +69,8 @@ int	main(int, char *[])
 
 	task();
 
-	m.removeTable<type>();
+	instance.scheduler->removeTask(node);
+
+	instance.components->removeTable<type>();
 	return 0;
 }
