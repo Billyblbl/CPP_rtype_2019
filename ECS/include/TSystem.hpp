@@ -26,7 +26,7 @@ namespace ECS {
 		public:
 
 			TSystem(Scheduler &scheduler, TComponentTable<Components>&... tables):
-				_componentsTables(std::forward<TComponentTable<Components>>(tables)...),
+				_componentsTables(std::forward<TComponentTable<Components> &>(tables)...),
 				_scheduler(&scheduler)
 			{}
 

@@ -40,9 +40,16 @@ int			TaskNode::getPrerequisites() const
 	return _prerequisites;
 }
 
-void		TaskNode::addMutator(const std::type_index &mutatorType)
+void		TaskNode::addWriter(const std::type_index &writerType)
 {
-	_mutatorIDs.push_back(mutatorType);
+	_writerIDs.push_back(writerType);
+	std::sort(_writerIDs.begin(), _writerIDs.end());
+}
+
+void		TaskNode::addReader(const std::type_index &readerType)
+{
+	_readerIDs.push_back(readerType);
+	std::sort(_readerIDs.begin(), _readerIDs.end());
 }
 
 void		TaskNode::addParent(TaskNode &parent)
@@ -121,8 +128,15 @@ bool		TaskNode::operator<(const TaskNode &rhs) const
 
 bool		TaskNode::isParallelisableWith(const TaskNode &other) const
 {
-	for (auto &id : other._mutatorIDs)
-		if (std::find(_mutatorIDs.begin(), _mutatorIDs.end(), id) != _mutatorIDs.end())
+	for (auto &id : other._writerIDs) {
+		if (std::binary_search(_writerIDs.begin(), _writerIDs.end(), id)
+			|| std::binary_search(_readerIDs.begin(), _readerIDs.end(), id)) {
 			return false;
+		}
+	}
+	for (auto &id : _writerIDs) {
+		if (std::binary_search(other._readerIDs.begin(), other._readerIDs.end(), id))
+			return false;
+	}
 	return true;
 }
