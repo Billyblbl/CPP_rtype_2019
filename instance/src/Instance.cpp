@@ -25,11 +25,17 @@ Instance::Instance(const std::string &path):
 void	Instance::load(const std::string &path)
 {
 	try {
-		auto			level = AssetCache::getGlobalCache().load<CachedJSON>(path);
-		auto			guard = *scheduler;
-		loadPlugins(level->value[std::string("plugins")]);
-		loadEntities(level->value[std::string("entities")]);
-		loadSystems(level->value[std::string("systems")]);
+		auto		level = AssetCache::getGlobalCache().load<CachedJSON>(path);
+		auto		guard = *scheduler;
+		const auto	&pluginsJSON = level->value[std::string("plugins")];
+		const auto	&entitiesJSON = level->value[std::string("entities")];
+		const auto	&systemsJSON = level->value[std::string("systems")];
+		if (!pluginsJSON.isNull())
+			loadPlugins(pluginsJSON);
+		if (!entitiesJSON.isNull())
+			loadEntities(entitiesJSON);
+		if (!systemsJSON.isNull())
+			loadSystems(systemsJSON);
 	} catch(const std::exception& e) {
 		throw std::runtime_error(std::string("Load failure : ") + e.what());
 	}
