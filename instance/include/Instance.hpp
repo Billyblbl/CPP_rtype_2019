@@ -14,6 +14,8 @@
 #include "EventMediator.hpp"
 #include "EntityPool.hpp"
 #include "TGuarded.hpp"
+#include "JSONValue.hpp"
+#include "PluginManager.hpp"
 
 ///
 ///@brief Game instance object
@@ -24,13 +26,25 @@ class Instance {
 
 		Instance();
 
+		Instance(const std::string &path);
+
+		void	load(const std::string &path);
+
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
 		TGuarded<Scheduler>				scheduler;
 		TGuarded<ECS::SystemManager>	systems;
+		TGuarded<PluginManager>			plugins;
+
+		using ComponentBuilder = void(*)(decltype(components) &, ECS::EntityID, const JSONValue &);
+		using SystemBuilder = void(*)(decltype(systems) &, const JSONValue &);
 
 	protected:
 	private:
+
+		void	loadPlugins(const JSONValue::Array &plugs);
+		void	loadEntities(const JSONValue::Array &ents);
+		void	loadSystems(const JSONValue::Array &syss);
 };
 
 #endif /* !INSTANCE_HPP_ */

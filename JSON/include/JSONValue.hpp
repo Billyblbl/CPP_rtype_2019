@@ -53,6 +53,18 @@ class JSONValue {
 		const JSONValue	&operator[](const std::string &key) const;
 
 		template<typename Variant>
+		operator Variant &()
+		{
+			return std::get<std::remove_const_t<Variant>>(_val);
+		}
+
+		template<typename Variant>
+		operator const Variant &() const
+		{
+			return std::get<Variant>(_val);
+		}
+
+		template<typename Variant>
 		Variant			&get()
 		{
 			return std::get<Variant>(_val);
@@ -77,6 +89,11 @@ class JSONValue {
 
 		static JSONValue	parseJSON(const std::string &input);
 		static JSONValue	loadJSON(const std::string &input);
+
+		Array::iterator	begin();
+		Array::iterator	end();
+		Array::const_iterator	begin() const;
+		Array::const_iterator	end() const;
 
 	protected:
 	private:

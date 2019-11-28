@@ -65,3 +65,23 @@ JSONValue				JSONValue::loadJSON(const std::string &path)
 {
 	return JSONParser{}.load(path);
 }
+
+JSONValue::Array::iterator	JSONValue::begin()
+{
+	return std::get<Array>(_val).begin();
+}
+
+JSONValue::Array::iterator	JSONValue::end()
+{
+	return std::get<Array>(_val).end();
+}
+
+JSONValue::Array::const_iterator	JSONValue::begin() const
+{
+	return std::get<Array>(_val).begin();
+}
+
+JSONValue::Array::const_iterator	JSONValue::end() const
+{
+	return std::get<Array>(_val).end();
+}

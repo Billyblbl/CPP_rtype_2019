@@ -52,7 +52,7 @@ class Plugin {
 
 		~Plugin() = default;
 
-		template<typename Callable = long(), typename... Args>
+		template<typename Callable/*  = long() */, typename... Args>
 		auto	call(const std::string &key, Args&&... args)
 		{
 			using Functional = std::function<Callable>;
@@ -66,7 +66,8 @@ class Plugin {
 			return callable(std::forward<Args>(args)...);
 		}
 
-		template<typename Callable = long()>
+		// !Unix only
+		template<typename Callable/*  = long() */>
 		auto	get(const std::string &key)
 		{
 			using Functional = std::function<Callable>;
