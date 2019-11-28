@@ -26,8 +26,8 @@ class Instance {
 
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
-		TGuarded<ECS::SystemManager>	systems;
 		TGuarded<Scheduler>				scheduler;
+		TGuarded<ECS::SystemManager>	systems;
 		// TGuarded<EventMediator>			events;
 
 	protected:

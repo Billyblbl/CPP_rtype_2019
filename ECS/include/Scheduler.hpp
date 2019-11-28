@@ -79,7 +79,7 @@ class Scheduler : public ATaskPresenter {
 		newNode.linkParent(_beginNode);
 		newNode.linkChild(_endNode);
 		for (auto &node : _taskgraph) {
-			if (!node.isParallelisableWith(newNode))
+			if (&newNode != &node && !node.isParallelisableWith(newNode))
 				node.linkChild(newNode);
 		}
 		newNode.resetPrerequisites();

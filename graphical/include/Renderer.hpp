@@ -15,13 +15,13 @@
 class Renderer : public ECS::TSystem<std::unique_ptr<sf::RenderWindow>, sf::Sprite>{
 	public:
 
-        using UniqueWindow = std::unique_ptr<sf::RenderWindow>;
+		using UniqueWindow = std::unique_ptr<sf::RenderWindow>;
 
-        template<typename... Components>
+		template<typename... Components>
 		Renderer(Scheduler &scheduler, ECS::TComponentTable<Components> &... tables):
-            ECS::TSystem<UniqueWindow, sf::Sprite>(scheduler, tables...)
-        {}
-    private :
-        void    onLoad() override;
+			ECS::TSystem<UniqueWindow, sf::Sprite>(scheduler, tables...)
+		{}
+	private :
+		void    onLoad() override;
 };
 #endif /* !RENDERER_HPP_ */
