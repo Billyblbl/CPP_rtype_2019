@@ -11,7 +11,6 @@
 #include "AssetCache.hpp"
 #include "JSONValue.hpp"
 #include "CachedJSON.hpp"
-#include "IComponentBuilder.hpp"
 
 Instance::Instance():
 	systems{*scheduler}
@@ -36,21 +35,33 @@ void	Instance::load(const std::string &path)
 	}
 }
 
+void	Instance::reload(const std::string &path)
+{
+	//some sort of clear but keeping some specified stuff in the instance
+	clear();//tmp
+	load(path);
+}
+
+void	Instance::clear()
+{
+	//clear all
+}
+
 void	Instance::loadPlugins(const JSONValue::Array &plugs)
 {
-	try {
-		for (auto &plugin : plugs) {
+	for (auto &plugin : plugs) {
+		try {
 			plugins->load(plugin.get<JSONValue::String>());
+		} catch(const std::exception& e) {
+			std::cerr << "Plugin load failure : " << e.what();
 		}
-	} catch(const std::exception& e) {
-		throw std::runtime_error(std::string("Plugin failure : ") + e.what());
 	}
 }
 
 void	Instance::loadEntities(const JSONValue::Array &ents)
 {
-	try {
-		for (auto &entity : ents) {
+	for (auto &entity : ents) {
+		try {
 			auto newEnt = entities->takeID();
 			for (auto &component : entity["components"]) {
 				auto				&srcKey = component["source"].get<JSONValue::String>();
@@ -61,17 +72,17 @@ void	Instance::loadEntities(const JSONValue::Array &ents)
 				);
 				build(components, newEnt, component["params"]);
 			}
+		} catch(const std::exception& e) {
+			std::cerr << "Entity load failure : " << e.what();
 		}
-		std::cout << "loaded " << entities->getPopSize() << " entities" << std::endl;
-	} catch(const std::exception& e) {
-		throw std::runtime_error(std::string("Entity failure : ") + e.what());
 	}
+	std::cout << "loaded " << entities->getPopSize() << " entities" << std::endl;
 }
 
 void	Instance::loadSystems(const JSONValue::Array &syss)
 {
-	try {
-		for (auto &system : syss) {
+	for (auto &system : syss) {
+		try {
 			auto			&srcKey = system["source"].get<JSONValue::String>();
 			auto			&systemSource = plugins[srcKey];
 			SystemBuilder	build = systemSource.call<SystemBuilder(const std::string&)>(
@@ -79,10 +90,10 @@ void	Instance::loadSystems(const JSONValue::Array &syss)
 				system["type"].get<JSONValue::String>()
 			);
 			build(systems, system["params"]);
+		} catch(const std::exception& e) {
+			std::cerr << "System load failure : " << e.what();
 		}
-		systems->reload();
-	} catch(const std::exception& e) {
-		throw std::runtime_error(std::string("Systems failure : ") + e.what());
 	}
+	systems->reload();
 }
 

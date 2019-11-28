@@ -29,6 +29,8 @@ class Instance {
 		Instance(const std::string &path);
 
 		void	load(const std::string &path);
+		void	reload(const std::string &path);
+		void	clear();
 
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
