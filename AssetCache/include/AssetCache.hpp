@@ -12,6 +12,7 @@
 #include <memory>
 #include <unordered_map>
 #include <any>
+#include <string>
 
 class AssetCache {
 	public:
@@ -35,7 +36,7 @@ class AssetCache {
 		auto emplace(const std::string &key, Args&&... args)
 		{
 			auto sptr = std::make_shared<T>(std::forward<Args>(args)...);
-			std::weak_ptr<std::any> wptr = sptr;
+			std::weak_ptr<T> wptr = sptr;
 			map[key] = wptr;
 			return (sptr);
 		}
