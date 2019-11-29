@@ -15,6 +15,7 @@ Scheduler::Scheduler():
 	_endNode([this](){onFrameEnd();})
 {
 	_endNode.linkChild(_beginNode);
+	_endNode.linkParent(_beginNode);
 	_available.push(&_beginNode);
 }
 
@@ -23,7 +24,8 @@ void	Scheduler::onReportTask(TaskExecutor task)
 {
 	for (auto *it : task->getChildrens()) {
 		auto &node = *it;
-		if ((--node).getPrerequisites() == 0)
+		--node;
+		if (node.getPrerequisites() == 0)
 			_available.push(&node);
 	}
 }

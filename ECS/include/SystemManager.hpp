@@ -14,6 +14,7 @@
 #include "ISystem.hpp"
 #include "TSystem.hpp"
 #include "Scheduler.hpp"
+#include "ComponentManager.hpp"
 
 namespace ECS {
 
@@ -24,7 +25,7 @@ namespace ECS {
 	class SystemManager {
 		public:
 
-			SystemManager(Scheduler &sheduler):
+			SystemManager(Scheduler &sheduler, ComponentManager &components):
 				_scheduler(&sheduler)
 			{}
 
@@ -47,11 +48,22 @@ namespace ECS {
 			template<typename SystemType, typename... Args>
 			void		addSystem(Args&&... args)
 			{
+				//i hate using hacks like these
+				addSystemImpl<SystemType>(std::forward<Args>(args)..., *reinterpret_cast<SystemType *>(NULL));
+			}
+
+			template<typename SystemType, typename... Components, typename... Args>
+			void		addSystemImpl(Args&&... args, const TSystem<Components...> &)
+			{
 				static_assert(std::is_base_of_v<ISystem, SystemType>, "not a System");
 				_systems.emplace(
 					std::type_index(typeid(SystemType)),
 					std::unique_ptr<ISystem>(
-						std::make_unique<SystemType>(*_scheduler, std::forward<Args>(args)...)
+						std::make_unique<SystemType>(
+							*_scheduler,
+							_components->getTable<Components>()...,
+							std::forward<Args>(args)...
+						)
 					)
 				);
 			}
@@ -63,12 +75,24 @@ namespace ECS {
 				_systems.erase(typeid(SystemType));
 			}
 
+			template<typename SystemType>
+			bool		hasSystem()
+			{
+				static_assert(std::is_base_of_v<ISystem, SystemType>, "not a System");
+				return _systems.find(typeid(SystemType)) != _systems.end();
+			}
+
 			void	rebind(Scheduler &scheduler)
 			{
 				_scheduler = &scheduler;
 				for (auto &[type, system] : _systems) {
 					system->rebind(scheduler);
 				}
+			}
+
+			void	rebind(ComponentManager &components)
+			{
+				_components = &components;
 			}
 
 			void	reload()
@@ -83,8 +107,9 @@ namespace ECS {
 
 			using SystemMap = std::unordered_map<std::type_index, std::unique_ptr<ISystem>>;
 
-			SystemMap	_systems;
-			Scheduler	*_scheduler;
+			SystemMap			_systems;
+			Scheduler			*_scheduler;
+			ComponentManager	*_components;
 	};
 }
 

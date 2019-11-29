@@ -49,7 +49,7 @@ void		TaskNode::addWriter(const std::type_index &writerType)
 void		TaskNode::addReader(const std::type_index &readerType)
 {
 	_readerIDs.push_back(readerType);
-	std::sort(_writerIDs.begin(), _writerIDs.end());
+	std::sort(_readerIDs.begin(), _readerIDs.end());
 }
 
 void		TaskNode::addParent(TaskNode &parent)
