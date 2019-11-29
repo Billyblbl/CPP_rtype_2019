@@ -43,7 +43,7 @@ const JSONValue		&JSONValue::operator[](const std::string &key) const
 
 bool				JSONValue::isNull() const
 {
-	return std::get_if<Null>(&_val) == nullptr;
+	return std::get_if<Null>(&_val) != nullptr;
 }
 
 JSONValue::Value		&JSONValue::getVal()

@@ -64,6 +64,8 @@ JSONValue	JSONParser::parseValue(titerator begin, titerator end)
 		break;
 	case OPENARR: return parseArray(begin, end);
 		break;
+	case JNULL: return parseNull(begin);
+		break;
 	default: throw std::runtime_error(std::string(__func__) + " : Unexpected token " + begin->second);
 		break;
 	}
