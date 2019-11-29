@@ -8,5 +8,5 @@
 #include "Instance.hpp"
 
 Instance::Instance():
-	systems{*scheduler}
+	systems{*scheduler, *components}
 {}
