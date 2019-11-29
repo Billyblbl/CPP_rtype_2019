@@ -12,6 +12,7 @@
 #include <memory>
 #include <unordered_map>
 #include <any>
+#include <string>
 
 class AssetCache {
 	public:

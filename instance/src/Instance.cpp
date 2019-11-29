@@ -13,7 +13,7 @@
 #include "CachedJSON.hpp"
 
 Instance::Instance():
-	systems{*scheduler}
+	systems{*scheduler, *components}
 {}
 
 Instance::Instance(const std::string &path):
