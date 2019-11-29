@@ -11,15 +11,22 @@
 #include <memory>
 #include "TComponentTable.hpp"
 #include "TSystem.hpp"
+#include "Component.hpp"
 
-class Renderer : public ECS::TSystem<std::unique_ptr<sf::RenderWindow>, sf::Sprite>{
+class Renderer : public ECS::TSystem<
+	std::unique_ptr<sf::RenderWindow>,
+	sf::Sprite,
+	Scale,
+	Position,
+	Rotation
+> {
 	public:
 
 		using UniqueWindow = std::unique_ptr<sf::RenderWindow>;
 
 		template<typename... Components>
 		Renderer(Scheduler &scheduler, ECS::TComponentTable<Components> &... tables):
-			ECS::TSystem<UniqueWindow, sf::Sprite>(scheduler, tables...)
+			ECS::TSystem<Components...>(scheduler, tables...)
 		{}
 	private :
 		void    onLoad() override;

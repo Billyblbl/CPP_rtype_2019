@@ -113,6 +113,9 @@ include_directories(server/include)
 add_executable(${SERVER_EXEC} ${SERVER_SOURCE})
 target_link_libraries(${SERVER_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding r_engine
 
+# Core
 
+# make_rengine_package(Core core)
+include_directories(core/include)
 
 set(VERBOSE)

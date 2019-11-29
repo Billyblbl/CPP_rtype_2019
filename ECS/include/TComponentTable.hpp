@@ -120,52 +120,52 @@ namespace ECS {
 					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
 			}
 
-			auto	find(EntityID ent)
+			decltype(auto)	find(EntityID ent)
 			{
-				auto	begin = begin();
-				auto	end = end();
-				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
-					if (middle->getID() < ent) {
-						begin = middle + 1;
-					} else if (middle->getID() > ent) {
-						end = middle;
+				auto	_begin = begin();
+				auto	_end = end();
+				for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
+					if (middle->getID() < _end->getID()) {
+						_begin = middle + 1;
+					} else if (middle->getID() > _end->getID()) {
+						_end = middle;
 					} else
 						return middle;
 				}
 				return end();
 			}
 
-			auto	find(EntityID ent) const
+			decltype(auto)	find(EntityID ent) const
 			{
-				auto	begin = begin();
-				auto	end = end();
-				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
-					if (middle->getID() < ent) {
-						begin = middle + 1;
-					} else if (middle->getID() > ent) {
-						end = middle;
+				auto	_begin = begin();
+				auto	_end = end();
+				for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
+					if (middle->getID() < _end->getID()) {
+						_begin = middle + 1;
+					} else if (middle->getID() > _end->getID()) {
+						_end = middle;
 					} else
 						return middle;
 				}
 				return end();
 			}
 
-			auto	begin()
+			decltype(auto)	begin()
 			{
 				return _components.begin();
 			}
 
-			auto	end()
+			decltype(auto)	end()
 			{
 				return _components.end();
 			}
 
-			auto	begin() const
+			decltype(auto)	begin() const
 			{
 				return _components.begin();
 			}
 
-			auto	end() const
+			decltype(auto)	end() const
 			{
 				return _components.end();
 			}

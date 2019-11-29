@@ -42,6 +42,8 @@ class TaskNode {
 			_writerIDs({std::forward<TypeIds>(writers)...})
 		{}
 
+		TaskNode(TaskNode &&) = delete;
+
 		///
 		///@brief Destroy the Task Node object
 		///
@@ -53,6 +55,8 @@ class TaskNode {
 		///
 		///
 		void		operator()();
+
+		void		operator=(TaskNode &&) = delete;
 
 		///
 		///@brief Decrement operator, decrement the prerequisites counter
