@@ -13,6 +13,8 @@
 #include "IComponentTable.hpp"
 #include "TComponent.hpp"
 
+#include <iostream>
+
 namespace ECS {
 
 	///
@@ -120,34 +122,46 @@ namespace ECS {
 					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
 			}
 
+			struct Comp {
+				bool	operator()(const TComponent<ComponentType> &a, EntityID b) {return a.getID() < b;}
+				bool	operator()(EntityID b, const TComponent<ComponentType> &a) {return a.getID() > b;}
+			};
+
 			decltype(auto)	find(EntityID ent)
 			{
-				auto	_begin = begin();
-				auto	_end = end();
-				for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
-					if (middle->getID() < _end->getID()) {
-						_begin = middle + 1;
-					} else if (middle->getID() > _end->getID()) {
-						_end = middle;
-					} else
-						return middle;
-				}
-				return end();
+				auto range = std::equal_range(begin(), end(), ent, Comp{});
+				return (range.first != range.second ? range.first : end());
+				// auto	_begin = begin();
+				// auto	_end = end();
+				// for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
+				// 	if (middle->getID() < _end->getID()) {
+				// 		_begin = middle + 1;
+				// 	} else if (middle->getID() > _end->getID()) {
+				// 		_end = middle;
+				// 	} else
+				// 		return middle;
+				// }
+				// return end();
 			}
 
 			decltype(auto)	find(EntityID ent) const
 			{
-				auto	_begin = begin();
-				auto	_end = end();
-				for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
-					if (middle->getID() < _end->getID()) {
-						_begin = middle + 1;
-					} else if (middle->getID() > _end->getID()) {
-						_end = middle;
-					} else
-						return middle;
-				}
-				return end();
+				auto range = std::equal_range(begin(), end(), ent, Comp{});
+				return (range.first != range.second ? range.first : end());
+				// auto	_begin = begin();
+				// auto	_end = end();
+				// std::cerr << __func__ << " : \nbegin = " << std::distance(begin(), _begin) << std::endl
+				// 					  << "end = " << std::distance(begin(), _end) << std::endl;
+				// for (auto middle = _begin + (_end - _begin) / 2; _begin < _end; middle = _begin + (_end - _begin) / 2) {
+				// 	std::cerr << __func__ << " : middle = " << std::distance(begin(), middle) << std::endl;
+				// 	if (middle->getID() < _end->getID()) {
+				// 		_begin = middle + 1;
+				// 	} else if (middle->getID() > _end->getID()) {
+				// 		_end = middle;
+				// 	} else
+				// 		return middle;
+				// }
+				// return end();
 			}
 
 			decltype(auto)	begin()
@@ -170,10 +184,23 @@ namespace ECS {
 				return _components.end();
 			}
 
+			// template<typename... Args>
+			// auto	&emplace(EntityID id , Args&&... args)
+			// {
+			// 	_components.emplace_back(id, std::forward<Args>(args)...);
+			// 	std::sort(_components.begin(), _components.end(), [](auto &a, auto &b){
+			// 		return a.getID() < b.getID();
+			// 	});
+			// 	return *find(id);
+			// }
+
 			template<typename... Args>
-			auto	&emplace(EntityID id , Args&&... args)
+			void	emplace(EntityID id , Args&&... args)
 			{
-				return _components.emplace_back(id, std::forward<Args>(args)...);
+				_components.emplace_back(id, std::forward<Args>(args)...);
+				std::sort(_components.begin(), _components.end(), [](auto &a, auto &b){
+					return a.getID() < b.getID();
+				});
 			}
 
 			using TableType = std::vector<TComponent<ComponentType>>;

@@ -2,11 +2,11 @@
 sfml/2.5.1@bincrafters/stable
 
 [options]
-#sfml:fPIC=True
-#sfml:shared=True
+sfml:fPIC=True
+sfml:shared=True
 sfml:graphics=True
 sfml:window=True
-sfml:audio=True
+sfml:audio=False
 sfml:network=False
 
 #[settings]

@@ -42,6 +42,8 @@ namespace ECS {
 
 			TComponent(TComponent &&) = default;
 
+			TComponent &operator=(TComponent &&) = default;
+
 			///
 			///@brief Conversion operator into the usable internal type
 			///
