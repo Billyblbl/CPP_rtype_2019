@@ -80,7 +80,7 @@ endif (${BUILD_DOC} AND ${DOXYGEN_FOUND})
 # R-Engine
 
 message(STATUS "Configuring R-Engine Build")
-set(RENGINE_DIR "ECS" "instance" "AssetCache")
+set(RENGINE_DIR "ECS" "instance" "AssetCache" "TCP")
 get_include(RENGINE_INCLUDE ${RENGINE_DIR})
 get_src(RENGINE_SOURCE ${RENGINE_DIR})
 include_directories(${RENGINE_INCLUDE})
@@ -97,7 +97,7 @@ target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding sfml +
 # Server
 
 message(STATUS "Configuring R-Type Server Build")
-file(GLOB SERVER_SOURCE "client/src/*.cpp")#tmp
+file(GLOB SERVER_SOURCE "server/src/*.cpp")#tmp
 include_directories(server/include)
 add_executable(${SERVER_EXEC} ${SERVER_SOURCE})
 target_link_libraries(${SERVER_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding r_engine

@@ -24,13 +24,20 @@ class Instance {
 
 		Instance();
 
+		using ID = uint64_t;
+
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
 		TGuarded<Scheduler>				scheduler;
 		TGuarded<ECS::SystemManager>	systems;
 
+		ID	getID() const;
+
 	protected:
 	private:
+		ID			_id;
+
+		static ID	nextID;
 };
 
 #endif /* !INSTANCE_HPP_ */

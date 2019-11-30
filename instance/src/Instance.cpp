@@ -7,6 +7,14 @@
 
 #include "Instance.hpp"
 
+Instance::ID	Instance::nextID = 0;
+
 Instance::Instance():
-	systems{*scheduler, *components}
+	systems{*scheduler, *components},
+	_id{nextID++}
 {}
+
+Instance::ID	Instance::getID() const
+{
+	return _id;
+}

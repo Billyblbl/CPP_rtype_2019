@@ -1,5 +1,6 @@
 [requires]
 sfml/2.5.1@bincrafters/stable
+boost/1.71.0@conan/stable
 
 [generators]
 cmake
