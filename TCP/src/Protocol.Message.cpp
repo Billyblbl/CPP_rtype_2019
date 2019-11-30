@@ -5,6 +5,7 @@
 ** protocol message definition
 */
 
+#include <string>
 #include "Protocol.hpp"
 
 REngineTCP::Message::Message(const std::vector<std::byte> &data):
@@ -18,13 +19,17 @@ REngineTCP::Message::Message(const std::vector<std::byte> &data):
 		std::transform(data.begin() + sizeof(MessageHeader), data.end(), text.begin(), [](auto byte){
 			return std::to_integer<char>(byte);
 		});
-		_payload = text;
+		_payload.emplace<std::string>(text);
 		break;
 	}
-	case ID: _payload = *reinterpret_cast<const uint64_t *>(data.data() + sizeof(MessageHeader));
+	case ID: _payload.emplace<uint32_t>(*reinterpret_cast<const uint32_t *>(data.data() + sizeof(MessageHeader)));
+		// std::cerr << "ID\n";
 		break;
-	case RAW: default: _payload = std::vector<std::byte>(next(data.begin(), sizeof(MessageHeader)), data.end());
+	case RAW: /* default: */ _payload.emplace<std::vector<std::byte>>(std::vector<std::byte>(next(data.begin(), sizeof(MessageHeader)), data.end()));
+		// std::cerr << "RAW\n";
 		break;
+	default:
+		throw std::runtime_error(std::string(__func__) + " : Unknown payload type : " + std::to_string(_header.payload));
 	}
 }
 

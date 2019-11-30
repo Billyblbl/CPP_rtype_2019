@@ -15,6 +15,7 @@
 #include <any>
 #include <boost/system/error_code.hpp>
 
+#include <iostream>
 class REngineTCP {
 	public:
 
@@ -114,7 +115,7 @@ class REngineTCP {
 				///
 				template<typename Payload>
 				Message(MessageType type, PayloadType ptype, const Payload &payload, size_t size):
-					_header(size, type, ptype),
+					_header(size + sizeof(MessageHeader), type, ptype),
 					_payload(payload)
 				{}
 
@@ -167,7 +168,13 @@ class REngineTCP {
 				template<typename T>
 				const T					&getPayloadAs() const
 				{
-					return *std::any_cast<T>(&_payload);
+					if (!_payload.has_value())
+						throw std::runtime_error(std::string(__func__) + " : No payload");
+					// std::cerr << "payload type = " << _payload.type().name() << '\n';
+					// std::cerr << "requested type = " << typeid(T).name() << '\n';
+					// std::cerr << "payload type enum " << _header.payload << '\n';
+					// std::cerr << "message type" << _header.type << '\n';
+					return std::any_cast<const T &>(_payload);
 				}
 
 			private:

@@ -193,6 +193,14 @@ namespace TCP
 				return _open;
 			}
 
+			void			connect(const std::string &address, int port)
+			{
+				_socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(address), port));
+				startReceive();
+				startSend();
+				onConnect();
+			}
+
 		protected:
 		private:
 

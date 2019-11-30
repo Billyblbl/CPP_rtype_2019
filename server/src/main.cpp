@@ -12,16 +12,16 @@ int	main(int, char *av[])
 {
 	Server::io_service		service;
 	Server::InstanceList	instances;
-	Server	server(std::atoi(av[1]), service, instances);
+	Server	server(std::stoi(av[1]), service, instances);
 	while (true) {
 		//make this the thread loop
+		service.poll();
 		for (auto &instance : instances) {
 			TaskExecutor	task = nullptr;
 			{
-				service.poll();
 				auto	lockedSched = *instance->scheduler;
 				if (lockedSched->hasAvailableTask())
-					task = instance->scheduler->takeTask();
+					task = lockedSched->takeTask();
 			}
 			if (task != nullptr) {
 				try {

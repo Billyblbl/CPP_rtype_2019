@@ -27,6 +27,7 @@ void				REngineTCP::writeMessage(std::vector<std::byte> &data, const Message &ms
 	Converter<MessageHeader>	header;
 	header.asObject.size = msg.getSize();
 	header.asObject.type = msg.getType();
+	header.asObject.payload = msg.getPayloadType();
 	data.insert(data.end(), std::begin(header.asData), std::end(header.asData));
 	switch (msg.getPayloadType()) {
 	case TEXT: {

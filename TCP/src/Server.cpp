@@ -40,7 +40,7 @@ void	Server::onMessage(Session &session, const REngineTCP::Message &message)
 	}
 }
 
-void	Server::onError(Session &session, const boost::system::error_code &er)
+void	Server::onError(Session &, const boost::system::error_code &)
 {
 	// session.Send(REngineTCP::Message(REngineTCP::ERROR, REngineTCP::Error(er)));
 }
