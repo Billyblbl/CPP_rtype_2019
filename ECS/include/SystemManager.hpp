@@ -14,6 +14,7 @@
 #include "ISystem.hpp"
 #include "TSystem.hpp"
 #include "Scheduler.hpp"
+#include "ComponentManager.hpp"
 
 namespace ECS {
 
@@ -24,8 +25,9 @@ namespace ECS {
 	class SystemManager {
 		public:
 
-			SystemManager(Scheduler &sheduler):
-				_scheduler(&sheduler)
+			SystemManager(Scheduler &sheduler, ComponentManager &components):
+				_scheduler(&sheduler),
+				_components(&components)
 			{}
 
 			template<typename SystemType>
@@ -47,11 +49,22 @@ namespace ECS {
 			template<typename SystemType, typename... Args>
 			void		addSystem(Args&&... args)
 			{
+				//i hate using hacks like these
+				addSystemImpl<SystemType>(*reinterpret_cast<SystemType *>(NULL), std::forward<Args>(args)...);
+			}
+
+			template<typename SystemType, typename... Components, typename... Args>
+			void		addSystemImpl(const TSystem<Components...> &, Args&&... args)
+			{
 				static_assert(std::is_base_of_v<ISystem, SystemType>, "not a System");
 				_systems.emplace(
 					std::type_index(typeid(SystemType)),
 					std::unique_ptr<ISystem>(
-						std::make_unique<SystemType>(*_scheduler, std::forward<Args>(args)...)
+						std::make_unique<SystemType>(
+							*_scheduler,
+							_components->getTable<Components>()...,
+							std::forward<Args>(args)...
+						)
 					)
 				);
 			}
@@ -78,6 +91,11 @@ namespace ECS {
 				}
 			}
 
+			void	rebind(ComponentManager &components)
+			{
+				_components = &components;
+			}
+
 			void	reload()
 			{
 				for (auto &[type, system] : _systems) {
@@ -90,8 +108,9 @@ namespace ECS {
 
 			using SystemMap = std::unordered_map<std::type_index, std::unique_ptr<ISystem>>;
 
-			SystemMap	_systems;
-			Scheduler	*_scheduler;
+			SystemMap			_systems;
+			Scheduler			*_scheduler;
+			ComponentManager	*_components;
 	};
 }
 

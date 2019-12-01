@@ -8,6 +8,14 @@ set (ENGINE_LIB "r-engine")
 set (CLIENT_EXEC "r-type_client")
 set (SERVER_EXEC "r-type_server")
 
+if (UNIX)
+	set(PLUGINLOADLIB dl)
+elseif(WIN32)
+	set(PLUGINLOADLIB "")
+endif(UNIX)
+
+# find_library()
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 include_directories(${CMAKE_INCLUDE_PATH} ${CONAN_INCLUDE_DIRS} include)
@@ -44,12 +52,12 @@ function(get_src LISTNAME)
 	set(${LISTNAME} "${${LOCALSRC}}" PARENT_SCOPE)
 endfunction(get_src)
 
-function(make_rengine_package package_name package_dir)
+function(make_rengine_plugin package_name package_dir)
 	get_include(${package_name}_INCLUDE ${package_dir})
 	get_src(${package_name}_SOURCE ${package_dir})
 	include_directories(${${package_name}_INCLUDE})
 	add_library(${package_name} SHARED ${${package_name}_SOURCE})
-endfunction(make_rengine_package)
+endfunction(make_rengine_plugin)
 
 # check if Doxygen is installed
 find_package(Doxygen)
@@ -80,17 +88,18 @@ endif (${BUILD_DOC} AND ${DOXYGEN_FOUND})
 # R-Engine
 
 message(STATUS "Configuring R-Engine Build")
-set(RENGINE_DIR "ECS" "instance" "AssetCache")
+set(RENGINE_DIR "ECS" "instance" "JSON" "plugins" "AssetCache")
 get_include(RENGINE_INCLUDE ${RENGINE_DIR})
 get_src(RENGINE_SOURCE ${RENGINE_DIR})
 include_directories(${RENGINE_INCLUDE})
 add_library(${ENGINE_LIB} SHARED ${RENGINE_SOURCE})
+target_link_libraries(${ENGINE_LIB} ${PLUGINLOADLIB})# adding sfml + r_engine
 
 # Packages
 
 message(STATUS "Configuring R-Engine Packages Build")
 
-make_rengine_package(Graphical graphical)
+make_rengine_plugin(Graphical graphical)
 target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
 
 foreach(lib ${CONAN_LIBS})

@@ -131,37 +131,12 @@ namespace ECS {
 			{
 				auto range = std::equal_range(begin(), end(), ent, Comp{});
 				return (range.first != range.second ? range.first : end());
-				// auto	_begin = begin();
-				// auto	_end = end();
-				// for (auto middle = _begin + (_end - _begin) / 2; _begin < _end - 1; middle = _begin + (_end - _begin) / 2) {
-				// 	if (middle->getID() < _end->getID()) {
-				// 		_begin = middle + 1;
-				// 	} else if (middle->getID() > _end->getID()) {
-				// 		_end = middle;
-				// 	} else
-				// 		return middle;
-				// }
-				// return end();
 			}
 
 			decltype(auto)	find(EntityID ent) const
 			{
 				auto range = std::equal_range(begin(), end(), ent, Comp{});
 				return (range.first != range.second ? range.first : end());
-				// auto	_begin = begin();
-				// auto	_end = end();
-				// std::cerr << __func__ << " : \nbegin = " << std::distance(begin(), _begin) << std::endl
-				// 					  << "end = " << std::distance(begin(), _end) << std::endl;
-				// for (auto middle = _begin + (_end - _begin) / 2; _begin < _end; middle = _begin + (_end - _begin) / 2) {
-				// 	std::cerr << __func__ << " : middle = " << std::distance(begin(), middle) << std::endl;
-				// 	if (middle->getID() < _end->getID()) {
-				// 		_begin = middle + 1;
-				// 	} else if (middle->getID() > _end->getID()) {
-				// 		_end = middle;
-				// 	} else
-				// 		return middle;
-				// }
-				// return end();
 			}
 
 			decltype(auto)	begin()

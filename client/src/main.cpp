@@ -20,8 +20,8 @@ struct CachedTexture {
 
 int	main(int, char *av[])
 {
-	try
-	{
+	// try
+	// {
 		auto Texture = AssetCache::getGlobalCache().load<CachedTexture>(av[1]);
 		Instance	instance;
 		instance.components->addTable<Renderer::UniqueWindow>();
@@ -29,12 +29,9 @@ int	main(int, char *av[])
 		instance.components->addTable<Scale>();
 		instance.components->addTable<Position>();
 		instance.components->addTable<Rotation>();
-		auto &windowTable = instance.components->getTable<Renderer::UniqueWindow>();
-		auto &spriteTable = instance.components->getTable<sf::Sprite>();
-		auto &ScaleTable = instance.components->getTable<Scale>();
-		auto &PositionTable = instance.components->getTable<Position>();
-		auto &RotationTable = instance.components->getTable<Rotation>();
-		instance.systems->addSystem<Renderer>(windowTable, spriteTable, ScaleTable, PositionTable ,RotationTable);
+		instance.components->getTable<Rotation>();
+		// std::cout <<  << std::endl;
+		instance.systems->addSystem<Renderer>();
 		auto WindowEntity = instance.entities->takeID();
 		auto SpriteTest = instance.entities->takeID();
 		instance.components->getTable<Renderer::UniqueWindow>().emplace(WindowEntity, std::make_unique<sf::RenderWindow>(sf::VideoMode(800, 600), std::string("R-Engine")));
@@ -71,10 +68,10 @@ int	main(int, char *av[])
 			}
 		}
 		return 0;
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		return 1;
-	}
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << '\n';
+	// 	return 1;
+	// }
 }

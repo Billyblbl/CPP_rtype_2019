@@ -14,7 +14,7 @@
 #include "Scheduler.hpp"
 
 template<class EventType, typename... Components>
-class TEventListener : pubic ECS::TSystem<std::queue<EventType>, Components...> {
+class [[deprecated]] TEventListener : pubic ECS::TSystem<std::queue<EventType>, Components...> {
 	public:
 
 		using EventOrigin = std::queue<EventType>;
@@ -22,13 +22,11 @@ class TEventListener : pubic ECS::TSystem<std::queue<EventType>, Components...> 
 		TEventListener(Scheduler &scheduler, ECS::ComponentManager &manager):
 			ECS::System{manager.getTable<EventOrigin>(), manager.getTable<Components>()...},
 			_task{
-				scheduler.postTask(
-					declareTask<EventOrigin, Components...>([this](const auto &events, auto&&... ){
-						for (auto &event : events) {
-							onNotify(event, event.getID());
-						}
-					})
-				)
+				declareTask<EventOrigin, Components...>([this](const auto &events, auto&&... ){
+					for (auto &event : events) {
+						onNotify(event, event.getID());
+					}
+				})
 			},
 			_scheduler{scheduler}
 		{}

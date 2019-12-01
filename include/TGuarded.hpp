@@ -104,7 +104,7 @@ class TGuarded {
 		///@param i Indexforwarded to the object's array subscript operator
 		///
 		template<typename I, typename Guard = std::lock_guard<Mutex>>
-		auto operator[](I &&i)
+		decltype(auto) operator[](I &&i)
 		{
 			Guard	g(_mutex);
 			return _obj[std::forward<I>(i)];
@@ -120,7 +120,7 @@ class TGuarded {
 		///@param i Index forwarded to the object's array subscript const operator
 		///
 		template<typename I, typename Guard = std::lock_guard<Mutex>>
-		auto operator[](I &&i) const
+		decltype(auto) operator[](I &&i) const
 		{
 			Guard	g(_mutex);
 			return _obj[std::forward<I>(i)];
@@ -136,7 +136,7 @@ class TGuarded {
 		///@param args Arguments forwarded to the object's call operator
 		///
 		template<typename... Args, typename Guard = std::lock_guard<Mutex>>
-		auto operator()(Args&&... args)
+		decltype(auto) operator()(Args&&... args)
 		{
 			Guard	g(_mutex);
 			return _obj(std::forward<Args>(args)...);
@@ -152,7 +152,7 @@ class TGuarded {
 		///@param args Arguments forwarded to the object's call const operator
 		///
 		template<typename... Args, typename Guard = std::lock_guard<Mutex>>
-		auto operator()(Args&&... args) const
+		decltype(auto) operator()(Args&&... args) const
 		{
 			Guard	g(_mutex);
 			return _obj(std::forward<Args>(args)...);
