@@ -12,6 +12,7 @@
 #include "ISystem.hpp"
 #include "TComponentTable.hpp"
 #include "TTask.hpp"
+#include "TEvent.hpp"
 #include "Scheduler.hpp"
 
 namespace ECS {
@@ -39,8 +40,6 @@ namespace ECS {
 				_tasks.clear();
 				onLoad();
 			}
-
-
 
 			///
 			///@brief interna tuple types of references to managed components' tables
@@ -78,6 +77,18 @@ namespace ECS {
 						)
 					),
 				taskRemover);
+			}
+
+			template<typename EventData, typename... HandlerComponents>
+			void	on(std::function<void(const EventData &event, EntityID source, MaybeConstTable<HandlerComponents> &...)> handler)
+			{
+				declareTask<const TEvent<EventData>, Components...>([&](const TComponentTable<EventData> &events, MaybeConstTable<HandlerComponents> &... tables){
+					for (auto &eventQueue : events) {
+						for (auto &event : eventQueue) {
+							handler(event, event.getID(), std::forward<HandlerComponents>(tables)...);
+						}
+					}
+				});
 			}
 
 			///
