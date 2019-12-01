@@ -120,60 +120,50 @@ namespace ECS {
 					throw std::invalid_argument(std::string(__func__) + " : Cannot find component of ID" + std::to_string(ent));
 			}
 
-			auto	find(EntityID ent)
+			struct Comp {
+				bool	operator()(const TComponent<ComponentType> &a, EntityID b) {return a.getID() < b;}
+				bool	operator()(EntityID b, const TComponent<ComponentType> &a) {return a.getID() > b;}
+			};
+
+			decltype(auto)	find(EntityID ent)
 			{
-				auto	begin = begin();
-				auto	end = end();
-				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
-					if (middle->getID() < ent) {
-						begin = middle + 1;
-					} else if (middle->getID() > ent) {
-						end = middle;
-					} else
-						return middle;
-				}
-				return end();
+				auto range = std::equal_range(begin(), end(), ent, Comp{});
+				return (range.first != range.second ? range.first : end());
 			}
 
-			auto	find(EntityID ent) const
+			decltype(auto)	find(EntityID ent) const
 			{
-				auto	begin = begin();
-				auto	end = end();
-				for (auto middle = begin + end / 2; begin < end - 1; middle = begin + end / 2) {
-					if (middle->getID() < ent) {
-						begin = middle + 1;
-					} else if (middle->getID() > ent) {
-						end = middle;
-					} else
-						return middle;
-				}
-				return end();
+				auto range = std::equal_range(begin(), end(), ent, Comp{});
+				return (range.first != range.second ? range.first : end());
 			}
 
-			auto	begin()
+			decltype(auto)	begin()
 			{
 				return _components.begin();
 			}
 
-			auto	end()
+			decltype(auto)	end()
 			{
 				return _components.end();
 			}
 
-			auto	begin() const
+			decltype(auto)	begin() const
 			{
 				return _components.begin();
 			}
 
-			auto	end() const
+			decltype(auto)	end() const
 			{
 				return _components.end();
 			}
 
 			template<typename... Args>
-			auto	&emplace(EntityID id , Args&&... args)
+			void	emplace(EntityID id , Args&&... args)
 			{
-				return _components.emplace_back(id, std::forward<Args>(args)...);
+				_components.emplace_back(id, std::forward<Args>(args)...);
+				std::sort(_components.begin(), _components.end(), [](auto &a, auto &b){
+					return a.getID() < b.getID();
+				});
 			}
 
 			using TableType = std::vector<TComponent<ComponentType>>;

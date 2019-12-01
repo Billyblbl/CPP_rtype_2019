@@ -39,6 +39,10 @@ namespace ECS {
 				_obj(std::forward<Args>(args)...)
 			{}
 
+			TComponent(TComponent &&) = default;
+
+			TComponent &operator=(TComponent &&) = default;
+
 			///
 			///@brief Conversion operator into the usable internal type
 			///
