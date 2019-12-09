@@ -122,6 +122,7 @@ message(STATUS "Configuring R-Engine Packages Build")
 
 make_rengine_plugin(Core core)
 make_rengine_plugin(Graphical graphical)
+make_rengine_plugin(Actors actors)
 target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
 
 # Assets

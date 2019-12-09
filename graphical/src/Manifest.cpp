@@ -7,6 +7,7 @@
 
 #include "Manifest.hpp"
 #include "Renderer.hpp"
+#include "Inputs.hpp"
 
 //Define all components exposable as R-Engine Plugin
 EXPOSABLE_COMPONENTS {
@@ -19,7 +20,8 @@ EXPOSABLE_COMPONENTS {
 
 //Define all systems exposable as R-Engine Plugin
 EXPOSABLE_SYSTEMS {
-	makeSystemEntry<Renderer>("sfml.renderer")
+	makeSystemEntry<Renderer>("sfml.renderer"),
+	makeSystemEntry<Inputs>("sfml.inputs")
 };
 
 //Expose all previously defined exposable component
