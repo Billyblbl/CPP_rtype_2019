@@ -10,6 +10,7 @@
 
 #include "Renderer.hpp"
 #include "Component.hpp"
+#include "TAsset.hpp"
 
 void    Renderer::onLoad() {
 
@@ -35,30 +36,43 @@ void    Renderer::onLoad() {
 		}
 	});
 
-	// random test task
-	declareTask<Rotation>([](auto &rotations){
-		for(auto &rotation : rotations) {
-			rotation->value += 0.3;
-		}
-	});
+	// // random test task
+	// declareTask<Rotation>([](auto &rotations){
+	// 	for(auto &rotation : rotations) {
+	// 		rotation->value += 0.3;
+	// 	}
+	// });
 
 	//draw task
-	declareTask<UniqueWindow, const sf::Sprite>([](auto &windows, auto &sprites){
+	declareTask<UniqueWindow, const sf::Sprite, TEvent<sf::Event>>([](auto &windows, auto &sprites, auto &events){
 		for(auto &window : windows) {
+			auto	entity = window.getID();
 			auto	&win = *window;
-			if (win->isOpen()) {
+			if (win.handle->isOpen()) {
+				win.handle->setActive(true);
 				sf::Event event = {};
-				while (win->pollEvent(event)) {
+				events[entity]->clear();
+				while (win.handle->pollEvent(event)) {
 					if (event.type == sf::Event::Closed ||
 						(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
-						win->close();
+						win.handle->close();
+					else
+						events[entity]->enqueue(std::move(event));
 				}
-				win->clear(sf::Color::Black);
+				win.handle->clear(/* sf::Color::Black */);
 				for (auto &sprite : sprites) {
-					win->draw(*sprite);
+					win.handle->draw(*sprite);
 				}
-				win->display();
+				win.handle->display();
+				win.handle->setActive(false);
 			}
 		}
 	});
+
+	on<TextureChanged, sf::Sprite, const ECS::TAsset<CachedTexture>>([](auto &events, auto source, auto &sprites, auto &textures) {
+		sprites[source]->setTexture((*textures[source])->texture, true);
+		auto	[_1, _2, width, height] = sprites[source]->getLocalBounds();
+		sprites[source]->setOrigin(width / 2.f, height / 2.f);
+	});
+
 }

@@ -95,16 +95,6 @@ include_directories(${RENGINE_INCLUDE})
 add_library(${ENGINE_LIB} SHARED ${RENGINE_SOURCE})
 target_link_libraries(${ENGINE_LIB} ${PLUGINLOADLIB})# adding sfml + r_engine
 
-# Packages
-
-message(STATUS "Configuring R-Engine Packages Build")
-
-make_rengine_plugin(Graphical graphical)
-target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
-
-foreach(lib ${CONAN_LIBS})
-	message(STATUS ${lib})
-endforeach(lib)
 
 # Client
 
@@ -112,7 +102,7 @@ message(STATUS "Configuring R-Type Client Build")
 file(GLOB CLIENT_SOURCE "client/src/*.cpp")#tmp
 include_directories(client/include)
 add_executable(${CLIENT_EXEC} ${CLIENT_SOURCE})
-target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB} Graphical)# adding sfml + r_engine
+target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB} )# adding r_engine
 
 # Server
 
@@ -124,7 +114,21 @@ target_link_libraries(${SERVER_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding r_engi
 
 # Core
 
-# make_rengine_package(Core core)
 include_directories(core/include)
+
+# Packages
+
+message(STATUS "Configuring R-Engine Packages Build")
+
+make_rengine_plugin(Core core)
+make_rengine_plugin(Graphical graphical)
+target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
+
+# Assets
+
+message(STATUS "Copying asset files into build location")
+
+file(GLOB ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets/*)
+file(COPY ${ASSETS} DESTINATION ${CMAKE_BINARY_DIR}/assets/)
 
 set(VERBOSE)

@@ -50,11 +50,11 @@ namespace ECS {
 			template<typename ComponentType>
 			decltype(auto)	getTable()
 			{
-				std::cout << "tables.size == " << _tables.size() << std::endl;
-				for (auto &entry : _tables) {
-					std::cout << entry.first.name() << ' ' << entry.first.hash_code() << std::endl;
-				}
-				std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
+				// std::cout << "tables.size == " << _tables.size() << std::endl;
+				// for (auto &entry : _tables) {
+				// 	std::cout << entry.first.name() << ' ' << entry.first.hash_code() << std::endl;
+				// }
+				// std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
 				static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 				auto it = find<ComponentType>();
 				if (it == end())
@@ -71,10 +71,10 @@ namespace ECS {
 			template<typename ComponentType>
 			decltype(auto)	getTable() const
 			{
-				for (auto &entry : _tables) {
-					std::cout << entry.first.name() << ' ' << entry.first.hash_code() << std::endl;
-				}
-				std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
+				// for (auto &entry : _tables) {
+				// 	std::cout << entry.first.name() << ' ' << entry.first.hash_code() << std::endl;
+				// }
+				// std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
 				static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 				auto it = find<ComponentType>();
 				if (it == end())
@@ -91,19 +91,19 @@ namespace ECS {
 			template<typename ComponentType>
 			void		addTable()
 			{
-				std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
+				// std::cout << __func__ << " : " << "type : " << typeid(ComponentType).name() << std::endl;
 				static_assert(std::is_base_of_v<IComponentTable, TComponentTable<ComponentType>>, "not a component table");
 
 				auto	it = find<ComponentType>();
 				if (it != end())
 					throw std::runtime_error(std::string(__func__) + " : Table already found : " + typeid(ComponentType).name());
-				std::cout << __func__ << " tables.size = " << _tables.size() << std::endl;
+				// std::cout << __func__ << " tables.size = " << _tables.size() << std::endl;
 				_tables.emplace(
 					std::upper_bound(begin(), end(), typeid(ComponentType), Comparator{}),
 					std::type_index(typeid(ComponentType)),
 					std::make_unique<TComponentTable<ComponentType>>()
 				);
-				std::cout << __func__ << " tables.size = " << _tables.size() << std::endl;
+				// std::cout << __func__ << " tables.size = " << _tables.size() << std::endl;
 				// std::sort(begin(), end(), [](auto &a, auto &b){
 				// 	return a.first < b.first;
 				// });

@@ -59,7 +59,7 @@ void	Instance::loadPlugins(const JSONValue::Array &plugs)
 		try {
 			plugins->load(plugin.get<JSONValue::String>());
 		} catch(const std::exception& e) {
-			std::cerr << "Plugin load failure : " << e.what();
+			std::cerr << "Plugin load failure : " << e.what() << "\r\n";
 		}
 	}
 }
@@ -67,19 +67,24 @@ void	Instance::loadPlugins(const JSONValue::Array &plugs)
 void	Instance::loadEntities(const JSONValue::Array &ents)
 {
 	for (auto &entity : ents) {
+		auto newEnt = entities->takeID();
 		try {
-			auto newEnt = entities->takeID();
 			for (auto &component : entity["components"]) {
-				auto				&srcKey = component["source"].get<JSONValue::String>();
-				auto				&componentSource = plugins[srcKey];
-				ComponentBuilder	build = componentSource.call<ComponentBuilder(const std::string&)>(
-					"getComponentBuilder",
-					component["type"].get<JSONValue::String>()
-				);
-				build(components, newEnt, component["params"]);
+				try {
+					auto				&srcKey = component["source"].get<JSONValue::String>();
+					auto				&componentSource = plugins[srcKey];
+					ComponentBuilder	build = componentSource.call<ComponentBuilder(const std::string&)>(
+						"getComponentBuilder",
+						component["type"].get<JSONValue::String>()
+					);
+					build(components, newEnt, component["params"]);
+				} catch(const std::exception &e) {
+					std::cerr << "Component load failure : " << component["type"].get<JSONValue::String>() << ' ' << e.what() << "\r\n";
+				}
 			}
 		} catch(const std::exception& e) {
-			std::cerr << "Entity load failure : " << e.what();
+			std::cerr << "Entity load failure : " << e.what() << "\r\n";
+			entities->returnID(newEnt);
 		}
 	}
 	std::cout << "loaded " << entities->getPopSize() << " entities" << std::endl;
@@ -97,7 +102,7 @@ void	Instance::loadSystems(const JSONValue::Array &syss)
 			);
 			build(systems, system["params"]);
 		} catch(const std::exception& e) {
-			std::cerr << "System load failure : " << e.what();
+			std::cerr << "System load failure : " << e.what() << "\r\n";
 		}
 	}
 	systems->reload();

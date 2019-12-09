@@ -66,26 +66,30 @@ namespace ECS {
 			///@return auto Built task
 			///
 			template<typename... TaskComponents, class Task = TTask<TaskComponents...>>
-			auto	&declareTask(const typename Task::ExecutorType &task)
+			void	declareTask(const typename Task::ExecutorType &task)
 			{
-				auto	taskRemover = [this](TaskNode *task){_scheduler->removeTask(*task);};
-				return _tasks.emplace_back(
-					&_scheduler->postTask(
-						TTask<TaskComponents...>(
-							std::get<TableNonConst<TaskComponents> &>(_componentsTables)...,
-							task
-						)
-					),
-				taskRemover);
+				try {
+					auto	taskRemover = [this](TaskNode *task){_scheduler->removeTask(*task);};
+					_tasks.emplace_back(
+						&_scheduler->postTask(
+							TTask<TaskComponents...>(
+								std::get<TableNonConst<TaskComponents> &>(_componentsTables)...,
+								task
+							)
+						),
+					taskRemover);
+				} catch(const std::exception& e) {
+					std::cerr << __func__ << " : " << e.what() << '\n';
+				}
 			}
 
 			template<typename EventData, typename... HandlerComponents>
 			void	on(std::function<void(const EventData &event, EntityID source, MaybeConstTable<HandlerComponents> &...)> handler)
 			{
-				declareTask<const TEvent<EventData>, Components...>([&](const TComponentTable<EventData> &events, MaybeConstTable<HandlerComponents> &... tables){
+				declareTask<const TEvent<EventData>, HandlerComponents...>([=](const TComponentTable<TEvent<EventData>> &events, MaybeConstTable<HandlerComponents> &... tables){
 					for (auto &eventQueue : events) {
-						for (auto &event : eventQueue) {
-							handler(event, event.getID(), std::forward<HandlerComponents>(tables)...);
+						for (auto &event : *eventQueue) {
+							handler(event, eventQueue.getID(), std::forward<MaybeConstTable<HandlerComponents> &>(tables)...);
 						}
 					}
 				});
