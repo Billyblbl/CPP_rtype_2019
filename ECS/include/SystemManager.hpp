@@ -26,7 +26,8 @@ namespace ECS {
 		public:
 
 			SystemManager(Scheduler &sheduler, ComponentManager &components):
-				_scheduler(&sheduler)
+				_scheduler(&sheduler),
+				_components(&components)
 			{}
 
 			template<typename SystemType>
@@ -49,11 +50,11 @@ namespace ECS {
 			void		addSystem(Args&&... args)
 			{
 				//i hate using hacks like these
-				addSystemImpl<SystemType>(std::forward<Args>(args)..., *reinterpret_cast<SystemType *>(NULL));
+				addSystemImpl<SystemType>(*reinterpret_cast<SystemType *>(NULL), std::forward<Args>(args)...);
 			}
 
 			template<typename SystemType, typename... Components, typename... Args>
-			void		addSystemImpl(Args&&... args, const TSystem<Components...> &)
+			void		addSystemImpl(const TSystem<Components...> &, Args&&... args)
 			{
 				static_assert(std::is_base_of_v<ISystem, SystemType>, "not a System");
 				_systems.emplace(

@@ -18,7 +18,7 @@ endif(UNIX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
-include_directories(${CMAKE_INCLUDE_PATH} include)
+include_directories(${CMAKE_INCLUDE_PATH} ${CONAN_INCLUDE_DIRS} include)
 
 function(get_include LISTNAME)
 	set(LOCALDIR ${LISTNAME}_get_src_dir_local)
@@ -95,13 +95,14 @@ include_directories(${RENGINE_INCLUDE})
 add_library(${ENGINE_LIB} SHARED ${RENGINE_SOURCE})
 target_link_libraries(${ENGINE_LIB} ${PLUGINLOADLIB})# adding sfml + r_engine
 
+
 # Client
 
 message(STATUS "Configuring R-Type Client Build")
 file(GLOB CLIENT_SOURCE "client/src/*.cpp")#tmp
 include_directories(client/include)
 add_executable(${CLIENT_EXEC} ${CLIENT_SOURCE})
-target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding sfml + r_engine
+target_link_libraries(${CLIENT_EXEC} ${CONAN_LIBS} ${ENGINE_LIB} )# adding r_engine
 
 # Server
 
@@ -110,3 +111,25 @@ file(GLOB SERVER_SOURCE "server/src/*.cpp")#tmp
 include_directories(server/include)
 add_executable(${SERVER_EXEC} ${SERVER_SOURCE})
 target_link_libraries(${SERVER_EXEC} ${CONAN_LIBS} ${ENGINE_LIB})# adding r_engine
+
+# Core
+
+include_directories(core/include)
+
+# Packages
+
+message(STATUS "Configuring R-Engine Packages Build")
+
+make_rengine_plugin(Core core)
+make_rengine_plugin(Graphical graphical)
+make_rengine_plugin(Actors actors)
+target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
+
+# Assets
+
+message(STATUS "Copying asset files into build location")
+
+file(GLOB ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets/*)
+file(COPY ${ASSETS} DESTINATION ${CMAKE_BINARY_DIR}/assets/)
+
+set(VERBOSE)

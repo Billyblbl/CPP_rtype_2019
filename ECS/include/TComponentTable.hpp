@@ -13,6 +13,8 @@
 #include "IComponentTable.hpp"
 #include "TComponent.hpp"
 
+#include <iostream>
+
 namespace ECS {
 
 	///
@@ -156,6 +158,16 @@ namespace ECS {
 			{
 				return _components.end();
 			}
+
+			// template<typename... Args>
+			// auto	&emplace(EntityID id , Args&&... args)
+			// {
+			// 	_components.emplace_back(id, std::forward<Args>(args)...);
+			// 	std::sort(_components.begin(), _components.end(), [](auto &a, auto &b){
+			// 		return a.getID() < b.getID();
+			// 	});
+			// 	return *find(id);
+			// }
 
 			template<typename... Args>
 			void	emplace(EntityID id , Args&&... args)

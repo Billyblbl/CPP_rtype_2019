@@ -8,6 +8,7 @@
 #ifndef TCOMPONENT_HPP_
 #define TCOMPONENT_HPP_
 
+#include <memory>
 #include "EntityPool.hpp"
 
 namespace ECS {
