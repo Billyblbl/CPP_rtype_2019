@@ -129,7 +129,7 @@ target_link_libraries(Graphical ${CONAN_LIBS} ${ENGINE_LIB})
 
 message(STATUS "Copying asset files into build location")
 
-file(GLOB ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/assets/*)
+file(GLOB ASSETS ${CMAKE_CURRENT_SOURCE_DIR}/Asset/*)
 file(COPY ${ASSETS} DESTINATION ${CMAKE_BINARY_DIR}/assets/)
 
 set(VERBOSE)
