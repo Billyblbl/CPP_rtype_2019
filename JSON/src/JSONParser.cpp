@@ -30,6 +30,7 @@ static const std::pair<std::regex, JSONParser::TokenType>	Entries[] = {
 
 JSONValue				JSONParser::load(const std::string &path)
 {
+	// std::cout << __func__ << std::endl;
 	try {
 		std::ifstream	file(path);
 		std::string		content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -44,12 +45,19 @@ JSONValue				JSONParser::load(const std::string &path)
 
 JSONValue				JSONParser::parse(const std::string &input)
 {
-	tokenise(input.begin(), input.end());
-	return parseValue(_tokens.begin(), _tokens.end());
+	// std::cout << __func__ << std::endl;
+	try {
+		tokenise(input.begin(), input.end());
+		return parseValue(_tokens.begin(), _tokens.end());
+	} catch(const std::exception& e) {
+		std::cerr << __func__ << ' ' << e.what() << '\n';
+		throw;
+	}
 }
 
 JSONValue	JSONParser::parseValue(titerator begin, titerator end)
 {
+	// std::cout << __func__ << std::endl;
 	if (begin == end) throw std::runtime_error(std::string(__func__) + " : Empty value");
 	switch (begin->first) {
 	case STRING: return parseString(begin);
@@ -73,8 +81,11 @@ JSONValue	JSONParser::parseValue(titerator begin, titerator end)
 
 void	JSONParser::tokenise(siterator begin, siterator end)
 {
+	// std::cout << __func__ << std::endl;
 	std::smatch	match;
 	for (auto it = begin; it < end; it += match.str().size()) {
+		// std::cout << "remaining :" << std::endl;
+		// std::cout << std::string(begin, end) << std::endl;
 		for (auto &entry : Entries) {
 			if (std::regex_search(it, end, match, entry.first)) {
 				if (entry.second != JSONParser::WHITESPACE)
@@ -85,10 +96,12 @@ void	JSONParser::tokenise(siterator begin, siterator end)
 		if (match.empty())
 			throw std::runtime_error(std::string(__func__) + " : JSON syntax error");
 	}
+	// std::cout << '/' << __func__ << std::endl;
 }
 
 JSONValue	JSONParser::parseString(titerator begin)
 {
+	// std::cout << __func__ << std::endl;
 	auto		&[_, value] = *begin;
 	std::string	unquoted(value.begin() + 1, value.end() - 1);
 	_tokens.erase(begin);
@@ -97,6 +110,7 @@ JSONValue	JSONParser::parseString(titerator begin)
 
 JSONValue	JSONParser::parseInteger(titerator begin)
 {
+	// std::cout << __func__ << std::endl;
 	auto		&[_, value] = *begin;
 	auto		val = std::stol(value);
 	_tokens.erase(begin);
@@ -105,6 +119,7 @@ JSONValue	JSONParser::parseInteger(titerator begin)
 
 JSONValue	JSONParser::parseFloat(titerator begin)
 {
+	// std::cout << __func__ << std::endl;
 	auto		&[_, value] = *begin;
 	auto		val = std::stod(value);
 	_tokens.erase(begin);
@@ -113,6 +128,7 @@ JSONValue	JSONParser::parseFloat(titerator begin)
 
 JSONValue	JSONParser::parseBool(titerator begin)
 {
+	// std::cout << __func__ << std::endl;
 	auto &[_, value] = *begin;
 	auto		val = (value == "value");
 	_tokens.erase(begin);
@@ -121,6 +137,7 @@ JSONValue	JSONParser::parseBool(titerator begin)
 
 JSONValue	JSONParser::parseObject(titerator begin, titerator end)
 {
+	// std::cout << __func__ << std::endl;
 	JSONValue::Object	obj = std::make_unique<JSONValue::ObjectImpl>();
 	while (std::next(begin)->first != JSONParser::CLOSEOBJ) {
 		auto	&&pairing = parsePairing(std::next(begin), std::prev(end));
@@ -136,6 +153,7 @@ JSONValue	JSONParser::parseObject(titerator begin, titerator end)
 
 JSONValue	JSONParser::parseArray(titerator begin, titerator end)
 {
+	// std::cout << __func__ << std::endl;
 	JSONValue::Array	arr;
 	while (std::next(begin)->first != JSONParser::CLOSEARR) {
 		arr.emplace_back(parseValue(std::next(begin), std::prev(end)));
@@ -150,12 +168,14 @@ JSONValue	JSONParser::parseArray(titerator begin, titerator end)
 
 JSONValue	JSONParser::parseNull(titerator begin)
 {
+	// std::cout << __func__ << std::endl;
 	_tokens.erase(begin);
 	return JSONValue::Null{};
 }
 
 JSONParser::Pairing	JSONParser::parsePairing(titerator begin, titerator end)
 {
+	// std::cout << __func__ << std::endl;
 	auto pairer = std::next(begin);
 	if (std::distance(begin, end) < 3)
 		throw std::runtime_error(std::string(__func__) + " : Syntax error : " + end->second);

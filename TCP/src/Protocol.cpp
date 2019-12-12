@@ -18,7 +18,10 @@ bool				REngineTCP::hasValidMessage(const std::vector<std::byte> &data)
 REngineTCP::Message	REngineTCP::extractMessage(std::vector<std::byte> &data)
 {
 	Message	msg(data);
-	data.erase(data.begin(), data.begin() + msg.getSize() + sizeof(MessageHeader));
+	// std::cout << "begin: " << data.begin().base() << '\n'
+	// 		  << "end: " << (data.begin() + msg.getSize()).base() << '\n'
+	// 		  << "data.size: " << data.size() << std::endl;
+	data.erase(data.begin(), data.begin() + msg.getSize());
 	return msg;
 }
 

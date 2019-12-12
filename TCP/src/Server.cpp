@@ -26,6 +26,7 @@ void	Server::onMessage(Session &session, const REngineTCP::Message &message)
 			makeInstance(message.getPayloadAs<std::string>()),
 			sizeof(REngineTCP::MessageHeader) + sizeof(REngineTCP::ID)
 		));
+		// std::cout << "???" << std::endl;
 		break;
 	case REngineTCP::KILLINSTANCE: killInstance(message.getPayloadAs<Instance::ID>());
 		break;
@@ -52,9 +53,9 @@ void	Server::onEngineErr(Session &session, const std::string &reason)
 	}));
 }
 
-Instance::ID	Server::makeInstance(const std::string &/* file */)
+Instance::ID	Server::makeInstance(const std::string &file)
 {
-	return _instances.emplace_back(std::make_unique<Instance>(/* file */))->getID();
+	return _instances.emplace_back(std::make_unique<Instance>(file))->getID();
 }
 
 void			Server::killInstance(Instance::ID id)

@@ -5,6 +5,7 @@
 ** JSONValue
 */
 
+#include <iostream>
 #include "JSONValue.hpp"
 #include "JSONParser.hpp"
 
@@ -63,6 +64,7 @@ JSONValue				JSONValue::parseJSON(const std::string &input)
 
 JSONValue				JSONValue::loadJSON(const std::string &path)
 {
+	std::cout << "loading JSON " << path << std::endl;
 	return JSONParser{}.load(path);
 }
 

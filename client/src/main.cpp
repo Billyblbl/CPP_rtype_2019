@@ -15,7 +15,7 @@ int	main(int, char *av[])
 {
 	Client::io_service	service;
 	Client::io_service::work	work(service);
-	Instance			instance(av[1]);
+	Instance			instance/* (av[1]) */;
 	Client				client(service, instance);
 	client.connect(std::string(av[1]), std::stoi(av[2]));
 	std::cout << "connected" << std::endl;

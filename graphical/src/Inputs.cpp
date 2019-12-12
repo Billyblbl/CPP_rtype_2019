@@ -11,12 +11,12 @@
 void	Inputs::onLoad()
 {
 
-	declareTask<Controller>([](auto &controllers){
-		for (auto &controller : controllers) {
-			// controller->direction = {0.f, 0.f};
-			std::cout << "controller = " << controller->direction.x << ' ' << controller->direction.y << std::endl;
-		}
-	});
+	// declareTask<Controller>([](auto &controllers){
+	// 	for (auto &controller : controllers) {
+	// 		// controller->direction = {0.f, 0.f};
+	// 		// std::cout << "controller = " << controller->direction.x << ' ' << controller->direction.y << std::endl;
+	// 	}
+	// });
 
 	on<sf::Event, Controller>([](auto &event, auto source, auto &controllers){
 		for (auto &controller : controllers) {
@@ -54,16 +54,16 @@ void	Inputs::onLoad()
 		for (auto &controller : controllers) {
 			fireEvents[controller.getID()]->clear();
 			if (event.type == sf::Event::KeyReleased) {
-				std::cout << "released" << std::endl;
+				// std::cout << "released" << std::endl;
 				switch (event.key.code) {
 				case sf::Keyboard::Z :
 				case sf::Keyboard::S :
-					std::cout << "reset y" << std::endl;
+					// std::cout << "reset y" << std::endl;
 					controller->direction.y = 0.f;
 					break;
 				case sf::Keyboard::Q :
 				case sf::Keyboard::D :
-					std::cout << "reset x" << std::endl;
+					// std::cout << "reset x" << std::endl;
 					controller->direction.x = 0.f;
 					break;
 				case sf::Keyboard::Space : {
