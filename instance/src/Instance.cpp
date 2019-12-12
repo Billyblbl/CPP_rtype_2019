@@ -12,8 +12,11 @@
 #include "JSONValue.hpp"
 #include "CachedJSON.hpp"
 
+Instance::ID	Instance::nextID = 0;
+
 Instance::Instance():
-	systems{*scheduler, *components}
+	systems{*scheduler, *components},
+	_id{nextID++}
 {}
 
 Instance::Instance(const std::string &path):
@@ -108,3 +111,7 @@ void	Instance::loadSystems(const JSONValue::Array &syss)
 	systems->reload();
 }
 
+Instance::ID	Instance::getID() const
+{
+	return _id;
+}

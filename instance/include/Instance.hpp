@@ -31,6 +31,7 @@ class Instance {
 		void	load(const std::string &path);
 		void	reload(const std::string &path);
 		void	clear();
+		using ID = uint64_t;
 
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
@@ -41,12 +42,17 @@ class Instance {
 		using ComponentBuilder = void(*)(decltype(components) &, ECS::EntityID, const JSONValue &);
 		using SystemBuilder = void(*)(decltype(systems) &, const JSONValue &);
 
+		ID	getID() const;
+
 	protected:
 	private:
 
 		void	loadPlugins(const JSONValue::Array &plugs);
 		void	loadEntities(const JSONValue::Array &ents);
 		void	loadSystems(const JSONValue::Array &syss);
+		ID			_id;
+
+		static ID	nextID;
 };
 
 #endif /* !INSTANCE_HPP_ */
