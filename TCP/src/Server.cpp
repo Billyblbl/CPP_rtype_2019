@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "Server.hpp"
 
 Server::Server(int port, io_service &service, InstanceList &instance):
@@ -55,10 +56,10 @@ void	Server::onEngineErr(Session &session, const std::string &reason)
 
 Instance::ID	Server::makeInstance(const std::string &file)
 {
-	return _instances.emplace_back("server/" + file).getID();
+	return _instances.emplace_back(/* "server/" +  */file).getID();
 }
 
-void			Server::loadInstance(Session &session, Instance::ID instance)
+void			Server::loadInstance(Session &session, Instance::ID id)
 {
 	auto	it = std::find_if(_instances.begin(), _instances.end(), [&](auto &instance){
 		return instance.getID() == id;

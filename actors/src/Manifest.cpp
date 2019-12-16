@@ -6,11 +6,13 @@
 */
 
 #include "Controller.hpp"
+#include "Speed.hpp"
 #include "Kinematic.hpp"
 #include "Manifest.hpp"
 
 EXPOSABLE_COMPONENTS {
 	makeComponentEntry<Controller>("actors.controller"),
+	makeComponentEntry<Speed, true>("actors.speed"),
 	makeEventEntry<Controller::BeamFire>("actors.fireBeamEvent")
 };
 

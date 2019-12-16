@@ -30,9 +30,12 @@ static const std::pair<std::regex, JSONParser::TokenType>	Entries[] = {
 
 JSONValue				JSONParser::load(const std::string &path)
 {
+	using namespace std::string_literals;
 	// std::cout << __func__ << std::endl;
 	try {
 		std::ifstream	file(path);
+		if (!file.is_open())
+			throw std::runtime_error(__func__ + " : unable to open file : "s + path);
 		std::string		content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 		return parse(content);
 	} catch(const std::exception& e) {

@@ -32,6 +32,8 @@ class Instance {
 		void	reload(const std::string &path);
 		void	clear();
 
+		const std::string &getLevel() const;
+
 		bool	poll();
 
 		using ID = uint64_t;
@@ -55,6 +57,7 @@ class Instance {
 		void	loadSystems(const JSONValue::Array &syss);
 
 		ID			_id;
+		std::string	_currentLevel;
 
 		static ID	nextID;
 };

@@ -10,9 +10,11 @@
 
 #include "TSystem.hpp"
 #include "InstanceCalls.hpp"
+#include "Timer.hpp"
 
 class InstanceManager : public ECS::TSystem<
-	TEvent<InstanceCalls::Type>
+	TEvent<InstanceCalls::Type>,
+	Timer
 > {
 	public:
 

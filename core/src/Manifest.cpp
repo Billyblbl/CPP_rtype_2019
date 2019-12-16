@@ -9,13 +9,15 @@
 #include "Component.hpp"
 #include "InstanceCalls.hpp"
 #include "InstanceManager.hpp"
+#include "Timer.hpp"
 
 //Define all components exposable as R-Engine Plugin
 EXPOSABLE_COMPONENTS {
 	makeComponentEntry<Scale, true>("core.scale2f"),
 	makeComponentEntry<Position, true>("core.position2f"),
 	makeComponentEntry<Rotation, true>("core.rotation2f"),
-	makeEventEntry<InstanceCalls::Type>("core.calls")
+	makeEventEntry<InstanceCalls::Type>("core.calls"),
+	makeComponentEntry<Timer>("core.timer")
 };
 
 //Expose all previously defined exposable component

@@ -5,6 +5,7 @@
 ** InstanceManager
 */
 
+#include <chrono>
 #include "InstanceManager.hpp"
 
 //debug
@@ -26,6 +27,16 @@ void	InstanceManager::onLoad()
 			break;
 		default:
 			break;
+		}
+	});
+
+	declareTask<Timer>([](auto &timers){
+		auto	now = Timer::Clock::now();
+		for (auto &timer : timers) {
+			timer->last = timer->now;
+			timer->now = now;
+			timer->deltaT = timer->now - timer->last;
+			timer->total = timer->now - timer->epoch;
 		}
 	});
 }

@@ -136,3 +136,8 @@ Instance::ID	Instance::getID() const
 {
 	return _id;
 }
+
+const std::string &Instance::getLevel() const
+{
+	return _currentLevel;
+}

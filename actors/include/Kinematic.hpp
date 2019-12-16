@@ -11,10 +11,14 @@
 #include "TSystem.hpp"
 #include "Controller.hpp"
 #include "Component.hpp"
+#include "Timer.hpp"
+#include "Speed.hpp"
 
 class Kinematic : public ECS::TSystem<
 	Controller,
-	Position
+	Position,
+	Timer,
+	Speed
 > {
 	public:
 
