@@ -14,9 +14,9 @@ TaskNode::TaskNode(std::function<void()> &&func):
 TaskNode::~TaskNode()
 {
 	for (auto *parent : _parentTasks)
-		parent->unlinkChild(*this);
+		parent->removeChild(*this);
 	for (auto *child: _childrenTasks)
-		child->unlinkParent(*this);
+		child->removeParent(*this);
 }
 
 void	TaskNode::operator()()
@@ -55,11 +55,13 @@ void		TaskNode::addReader(const std::type_index &readerType)
 void		TaskNode::addParent(TaskNode &parent)
 {
 	_parentTasks.push_back(&parent);
+	_prerequisites++;
 }
 
 void		TaskNode::removeParent(TaskNode &parent)
 {
 	_parentTasks.erase(std::find(_parentTasks.begin(), _parentTasks.end(), &parent));
+	_prerequisites--;
 }
 
 void		TaskNode::linkParent(TaskNode &parent)

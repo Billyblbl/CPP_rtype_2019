@@ -31,6 +31,8 @@ namespace ECS {
 				_scheduler(&scheduler)
 			{}
 
+			virtual ~TSystem() = default;
+
 			///
 			///@brief Reload the system
 			///
@@ -100,6 +102,16 @@ namespace ECS {
 			///
 			///
 			virtual void	onLoad() {}
+
+			decltype(auto)	getScheduler()
+			{
+				return *_scheduler;
+			}
+
+			decltype(auto)	getScheduler() const
+			{
+				return *_scheduler;
+			}
 
 			using TaskSubscription = std::unique_ptr<TaskNode, std::function<void(TaskNode *)>>;
 

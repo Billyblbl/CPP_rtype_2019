@@ -55,20 +55,43 @@ void	Server::onEngineErr(Session &session, const std::string &reason)
 
 Instance::ID	Server::makeInstance(const std::string &file)
 {
-	return _instances.emplace_back(std::make_unique<Instance>(file))->getID();
+	return _instances.emplace_back("server/" + file).getID();
+}
+
+void			Server::loadInstance(Session &session, Instance::ID instance)
+{
+	auto	it = std::find_if(_instances.begin(), _instances.end(), [&](auto &instance){
+		return instance.getID() == id;
+	});
+	if (it == _instances.end()) {
+		std::string_view	err("Instance not found");
+	} else {
+		loadInstance(session, it);
+	}
+}
+
+void			Server::loadInstance(Session &session, InstanceList::iterator instance)
+{
+	std::string	payload = instance->getLevel();
+
+	std::ifstream	file("client/" + payload);
+	std::string		content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+
+	session.Send(REngineTCP::Message(REngineTCP::LOADINSTANCE, REngineTCP::TEXT, payload, sizeof(REngineTCP::MessageHeader) + payload.size()));
 }
 
 void			Server::killInstance(Instance::ID id)
 {
 	_instances.erase(std::find_if(_instances.begin(), _instances.end(), [&](auto &instance){
-		return instance->getID() == id;
+		return instance.getID() == id;
 	}));
 }
 
 void			Server::joinInstance(Session &session, Instance::ID id)
 {
 	auto	it = std::find_if(_instances.begin(), _instances.end(), [&](auto &instance){
-		return instance->getID() == id;
+		return instance.getID() == id;
 	});
 	if (it == _instances.end()) {
 		std::string_view	err("Instance not found");
@@ -82,7 +105,7 @@ void			Server::joinInstance(Session &session, Instance::ID id)
 void			Server::quitInstance(Session &session, Instance::ID id)
 {
 	auto	it = std::find_if(_instances.begin(), _instances.end(), [&](auto &instance){
-		return instance->getID() == id;
+		return instance.getID() == id;
 	});
 	if (it == _instances.end()) {
 		std::string_view	err("Instance not found");

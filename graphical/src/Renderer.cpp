@@ -44,19 +44,21 @@ void    Renderer::onLoad() {
 	// });
 
 	//draw task
-	declareTask<UniqueWindow, const sf::Sprite, TEvent<sf::Event>>([](auto &windows, auto &sprites, auto &events){
+	declareTask<UniqueWindow, const sf::Sprite, TEvent<sf::Event>, TEvent<InstanceCalls::Type>>([](auto &windows, auto &sprites, auto &events, auto &calls){
 		for(auto &window : windows) {
 			auto	entity = window.getID();
 			auto	&win = *window;
+			calls[entity]->clear();
 			if (win.handle->isOpen()) {
 				win.handle->setActive(true);
 				sf::Event event = {};
 				events[entity]->clear();
 				while (win.handle->pollEvent(event)) {
 					if (event.type == sf::Event::Closed ||
-						(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+						(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
 						win.handle->close();
-					else
+						calls[entity]->enqueue(InstanceCalls::EXIT);
+					} else
 						events[entity]->enqueue(std::move(event));
 				}
 				win.handle->clear(/* sf::Color::Black */);

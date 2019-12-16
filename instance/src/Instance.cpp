@@ -56,6 +56,27 @@ void	Instance::clear()
 	//clear all
 }
 
+bool	Instance::poll()
+{
+	TaskExecutor	task = nullptr;
+	{
+		auto	lockedSched = *scheduler;
+		if (lockedSched->hasAvailableTask())
+			task = lockedSched->takeTask();
+		else if (!lockedSched->hasPendingTask())
+			return false;
+	}
+	if (task != nullptr) {
+		try {
+			(*task)();
+		} catch(const std::exception& e) {
+			std::cerr << "Task Failed" << e.what() << '\n';
+		}
+		scheduler->reportTask(task);
+	}
+	return true;
+}
+
 void	Instance::loadPlugins(const JSONValue::Array &plugs)
 {
 	for (auto &plugin : plugs) {

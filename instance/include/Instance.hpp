@@ -31,13 +31,16 @@ class Instance {
 		void	load(const std::string &path);
 		void	reload(const std::string &path);
 		void	clear();
+
+		bool	poll();
+
 		using ID = uint64_t;
 
+		TGuarded<Scheduler>				scheduler;
+		TGuarded<PluginManager>			plugins;
 		TGuarded<ECS::EntityPool>		entities;
 		TGuarded<ECS::ComponentManager>	components;
-		TGuarded<Scheduler>				scheduler;
 		TGuarded<ECS::SystemManager>	systems;
-		TGuarded<PluginManager>			plugins;
 
 		using ComponentBuilder = void(*)(decltype(components) &, ECS::EntityID, const JSONValue &);
 		using SystemBuilder = void(*)(decltype(systems) &, const JSONValue &);
@@ -50,6 +53,7 @@ class Instance {
 		void	loadPlugins(const JSONValue::Array &plugs);
 		void	loadEntities(const JSONValue::Array &ents);
 		void	loadSystems(const JSONValue::Array &syss);
+
 		ID			_id;
 
 		static ID	nextID;

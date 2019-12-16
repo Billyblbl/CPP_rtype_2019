@@ -9,6 +9,7 @@
 #define RENDERER_HPP_
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "InstanceCalls.hpp"
 #include "TComponentTable.hpp"
 #include "TSystem.hpp"
 #include "Component.hpp"
@@ -44,7 +45,8 @@ class Renderer : public ECS::TSystem<
 	Rotation,
 	ECS::TAsset<CachedTextureImpl>,
 	TEvent<TextureChangedImpl>,
-	TEvent<sf::Event>
+	TEvent<sf::Event>,
+	TEvent<InstanceCalls::Type>
 > {
 	public:
 

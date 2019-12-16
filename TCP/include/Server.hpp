@@ -10,7 +10,10 @@
 
 #include <boost/asio.hpp>
 #include <vector>
+#include <forward_list>
 #include <memory>
+#include <mutex>
+#include <shared_mutex>
 #include "TServer.hpp"
 #include "Protocol.hpp"
 #include "Instance.hpp"
@@ -25,7 +28,15 @@ struct Metadata {
 class Server : public TCP::TServer<REngineTCP, Metadata> {
 	public:
 
-		using InstanceList = std::vector<std::unique_ptr<Instance>>;
+		// struct InstanceNode {
+		// 	Instance			instance;
+		// 	std::shared_mutex	mutex;
+		// };
+
+		// using InstanceList = std::list<InstanceNode>;
+		using InstanceList = std::list<Instance>;
+		using InstanceIter = InstanceList::iterator;
+		// using InstanceList = std::vector<std::unique_ptr<Instance>>;
 		using Session = ConnectionType;
 
 		Server(int port, io_service &service, InstanceList &list);
@@ -37,6 +48,11 @@ class Server : public TCP::TServer<REngineTCP, Metadata> {
 		void	onEngineErr(Session &session, const std::string &reason);
 
 		Instance::ID	makeInstance(const std::string &file);
+
+		void			loadInstance(Session &session, Instance::ID id);
+		void			loadInstance(Session &session, InstanceList::iterator instance);
+
+
 		void			killInstance(Instance::ID id);
 
 		void			joinInstance(Session &session, Instance::ID id);

@@ -32,7 +32,8 @@ class REngineTCP {
 			KILLINSTANCE = 2,	//request destruction of an instance, arg = instanceID, no answer needed
 			JOININSTANCE = 3,	//request join of an instance, arg = instanceID, answer = playerID
 			QUITINSTANCE = 4,	//request quit of an instance, arg = instanceID, no answer needed
-			LISTINSTANCE = 5	//request a list of instances, no arg needed, answer = all current instances' IDs
+			LISTINSTANCE = 5,	//request a list of instances, no arg needed, answer = all current instances' IDs
+			LOADINSTANCE = 6	//server->client only, arg = JSON data of the level to load
 		};
 
 		enum PayloadType : uint16_t {

@@ -28,6 +28,8 @@ class Scheduler : public ATaskPresenter {
 	///
 	Scheduler();
 
+	~Scheduler();
+
 	///
 	///@brief Task Graph container
 	///
@@ -93,12 +95,15 @@ class Scheduler : public ATaskPresenter {
 	///
 	void	removeTask(TaskNode &node);
 
+	void	stop();
+
 	protected:
 	private:
 
 		Graph		_taskgraph;
 		TaskNode	_beginNode;
 		TaskNode	_endNode;
+		bool		_running;
 
 };
 
