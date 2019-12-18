@@ -15,7 +15,7 @@
 
 static const std::pair<std::regex, JSONParser::TokenType>	Entries[] = {
 	{std::regex("^\"[^\"]*\""), 		JSONParser::STRING},
-	{std::regex("^-?[0-9]+.[0-9]+"),	JSONParser::FLOAT},
+	{std::regex("^-?[0-9]+\\.[0-9]+"),	JSONParser::FLOAT},
 	{std::regex("^-?[0-9]+"),			JSONParser::INTEGER},
 	{std::regex("^null"),				JSONParser::JNULL},
 	{std::regex("^true|false"),			JSONParser::BOOL},

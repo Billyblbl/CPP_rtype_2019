@@ -34,12 +34,12 @@ class JSONValue {
 		JSONValue(const JSONValue &) = default;
 
 		template<typename Variant>
-		JSONValue(const Variant &val):
+		JSONValue(Variant &&val):
 			_val(std::forward<Variant>(val))
 		{}
 
 		template<typename Variant>
-		JSONValue(Variant &&val):
+		JSONValue(const Variant &val):
 			_val(std::forward<Variant>(val))
 		{}
 

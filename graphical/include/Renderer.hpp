@@ -29,8 +29,8 @@ struct CachedTextureImpl {
 struct ParsedWindowImpl {
 	inline ParsedWindowImpl(const JSONValue &params):
 		handle(std::make_unique<sf::RenderWindow>(sf::VideoMode(
-			params["width"].get<JSONValue::Numberf>(),
-			params["height"].get<JSONValue::Numberf>()
+			params["width"].get<JSONValue::Numberi>(),
+			params["height"].get<JSONValue::Numberi>()
 		), params["title"].get<JSONValue::String>()))
 	{}
 

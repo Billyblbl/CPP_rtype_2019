@@ -8,6 +8,8 @@
 #include "Manifest.hpp"
 #include "Renderer.hpp"
 #include "Inputs.hpp"
+#include "Animator.hpp"
+#include "Animations.hpp"
 
 //Define all components exposable as R-Engine Plugin
 EXPOSABLE_COMPONENTS {
@@ -15,17 +17,19 @@ EXPOSABLE_COMPONENTS {
 	makeComponentEntry<sf::Sprite>("sfml.sprite"),
 	makeAssetEntry<Renderer::CachedTexture>("sfml.texture"),
 	makeEventEntry<Renderer::TextureChanged>("sfml.textureChangeEvent"),
-	makeEventEntry<sf::Event>("sfml.windowEvent")
+	makeEventEntry<sf::Event>("sfml.windowEvent"),
+	makeComponentEntry<Animator, true>("sfml.animator")
 };
 
 //Define all systems exposable as R-Engine Plugin
 EXPOSABLE_SYSTEMS {
 	makeSystemEntry<Renderer>("sfml.renderer"),
-	makeSystemEntry<Inputs>("sfml.inputs")
+	makeSystemEntry<Inputs>("sfml.inputs"),
+	makeSystemEntry<Animations>("sfml.animations")
 };
 
 //Expose all previously defined exposable component
-EXPOSE_COMPONENTS
+EXPOSE_COMPONENTS;
 
 //Expose all previously defined exposable systems
-EXPOSE_SYSTEMS
+EXPOSE_SYSTEMS;
